@@ -45,7 +45,7 @@ services:
       - .:/var/www/html
     networks:
       - my-network
-    command: ["composer", "install"]
+    command: ["sh", "-c", "composer install && tail -f /dev/null"]
 
 volumes:
   mysql-data:
