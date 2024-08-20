@@ -1,0 +1,56 @@
+# Git files
+.git
+.dockerignore
+
+# Log files
+**/*.log
+npm-debug.log
+yarn-error.log
+yarn-debug.log*
+
+# Node modules
+node_modules
+
+# Laravel vendor directory
+vendor
+
+# Laravel log and cache files
+storage/logs
+storage/framework/cache
+storage/framework/sessions
+storage/framework/views
+
+# Environment files
+.env
+.env.*.local
+.env.test
+.env.production
+
+# Docker files
+docker-compose.yml
+Dockerfile
+Dockerfile.node
+
+# IDE/editor settings
+.idea
+.vscode
+*.sublime-project
+*.sublime-workspace
+*.code-workspace
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Other unnecessary files
+coverage
+public/hot
+public/storage
+
+# PHPStorm
+phpstorm.meta.php
+.phpstorm.meta.php
+.phpstorm
+
+# Laravel Mix
+mix-manifest.json
