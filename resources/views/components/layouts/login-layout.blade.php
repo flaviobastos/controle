@@ -28,7 +28,7 @@
         });
         Toast.fire({
             icon: "error",
-            title: "O usuário não encontrado!"
+            title: "O usuário não foi encontrado"
         });
     });
 </script>
