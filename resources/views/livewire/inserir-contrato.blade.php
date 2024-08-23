@@ -23,12 +23,13 @@
 
                     <div class="col-span-2">
                         <label for="selecionar_contrato" class="block mb-2 text-sm font-medium text-gray-900">Selecionar
-                            Contrato</label>
-                        <select id="selecionar_contrato"
+                            Contrato / Fornecedor</label>
+                        <select id="selecionar_contrato" wire:model.live="id_contrato" wire:change="changeContract"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5">
                             <option value="" selected=""Ï>Cadastrar Novo Contrato</option>
                             @foreach ($listaContratos as $contrato)
-                                <option value="{{ $contrato->id }}">{{ $contrato->fornecedor }}</option>
+                                <option value="{{ $contrato->id }}">
+                                    {{ $contrato->contrato . ' - ' . $contrato->fornecedor }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -67,9 +68,34 @@
 
                 </div>
 
-                <div class="flex flex-row items-center justify-end">
+                <div class="flex flex-row items-center justify-between">
+
+                    <button type="button" wire:click="clear"
+                        class="text-white inline-flex items-center bg-yellow-700 hover:bg-yellow-800 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#ffffff"
+                            viewBox="0 0 256 256" class="mr-2">
+                            <path
+                                d="M225,80.4,183.6,39a24,24,0,0,0-33.94,0L31,157.66a24,24,0,0,0,0,33.94l30.06,30.06A8,8,0,0,0,66.74,224H216a8,8,0,0,0,0-16h-84.7L225,114.34A24,24,0,0,0,225,80.4ZM108.68,208H70.05L42.33,180.28a8,8,0,0,1,0-11.31L96,115.31,148.69,168Zm105-105L160,156.69,107.31,104,161,50.34a8,8,0,0,1,11.32,0l41.38,41.38a8,8,0,0,1,0,11.31Z">
+                            </path>
+                        </svg>
+                        Limpar
+                    </button>
+
+                    @if ($this->id_contrato != null)
+                        <button type="button" wire:click="save"
+                            class="text-white inline-flex items-center bg-red-700 hover:bg-red-800 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#ffffff"
+                                viewBox="0 0 256 256" class="mr-2">
+                                <path
+                                    d="M216,48H176V40a24,24,0,0,0-24-24H104A24,24,0,0,0,80,40v8H40a8,8,0,0,0,0,16h8V208a16,16,0,0,0,16,16H192a16,16,0,0,0,16-16V64h8a8,8,0,0,0,0-16ZM96,40a8,8,0,0,1,8-8h48a8,8,0,0,1,8,8v8H96Zm96,168H64V64H192ZM112,104v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Zm48,0v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Z">
+                                </path>
+                            </svg>
+                            Excluir
+                        </button>
+                    @endif
+
                     <button type="button" wire:click="save"
-                        class="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                        class="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#ffffff"
                             viewBox="0 0 256 256" class="mr-2">
                             <path
@@ -78,8 +104,31 @@
                         </svg>
                         Salvar
                     </button>
-                </div>
 
+                </div>
             </form>
         </div>
     </div>
+
+    <script>
+        window.addEventListener('deleteContractMsg', function(e) {
+            var contractNumber = e.detail; // Obtém o valor do evento
+            Swal.fire({
+                title: "Tem certeza disso?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Sim, atualizar",
+                cancelButtonText: "Não, cancelar",
+                reverseButtons: true,
+                html: "Os dados referentes ao <strong>Contrato Nº " +
+                    contractNumber +
+                    "</strong> serão atualizados.", // Adiciona o valor ao conteúdo HTML
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    @this.call('contractUpdate')
+                }
+            });
+        });
+    </script>
