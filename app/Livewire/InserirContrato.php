@@ -57,6 +57,23 @@ class InserirContrato extends Component
         $this->processContractCreation($validated);
     }
 
+    public function delete() // Chama a função para confirmar o delete
+    {
+        $this->dispatch('deleteContractMsg',  $this->contrato);
+    }
+
+    public function contractDelete() // Deleta o contrato
+    {
+        $contractDeleted = Contrato::destroy($this->id_contrato); // Deleta o registro com o ID especificado
+        $this->clear();
+
+        if ($contractDeleted) {   // Se o contrato for deletado
+            $this->dispatchNotification('success');
+        } else {
+            $this->dispatchNotification('error');
+        }
+    }
+
     public function processContractCreation($validated) // Verifica se o contrato já existe
     {
         // Verifica se o contrato já existe
@@ -64,7 +81,7 @@ class InserirContrato extends Component
 
         if ($existingContract) {
             // Se o contrato já existir, exibe uma mensagem em SweetAlert2
-            $this->dispatch('deleteContractMsg',  $this->contrato);
+            $this->dispatch('existingContract',  $this->contrato);
         } else {
             $this->contractCreate($validated);
         }

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('contrato_id')->constrained('contratos')->onDelete('cascade')->onUpdate('cascade');
             $table->date('vencimento');
             $table->string('parcela', 5);
+            $table->string('responsavel', 30);
             $table->string('nota_fiscal', 5);
             $table->decimal('valor', 11, 2);
             $table->date('data_pagamento');

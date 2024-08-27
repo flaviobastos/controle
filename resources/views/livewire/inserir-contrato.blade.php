@@ -4,9 +4,9 @@
         <div class="relative bg-white rounded-lg shadow">
             <!-- Modal header -->
             <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
-                <h3 class="text-lg font-semibold text-gray-900">
+                <p class="text-lg font-semibold text-gray-900">
                     Cadastrar Contrato
-                </h3>
+                </p>
                 <button type="button" wire:click="clear" x-on:click="inserirContrato=false"
                     class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center">
                     <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -71,7 +71,7 @@
                 <div class="flex flex-row items-center justify-between">
 
                     <button type="button" wire:click="clear"
-                        class="text-white inline-flex items-center bg-yellow-700 hover:bg-yellow-800 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                        class="text-white inline-flex items-center bg-emerald-500 hover:bg-emerald-800 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#ffffff"
                             viewBox="0 0 256 256" class="mr-2">
                             <path
@@ -82,8 +82,8 @@
                     </button>
 
                     @if ($this->id_contrato != null)
-                        <button type="button" wire:click="save"
-                            class="text-white inline-flex items-center bg-red-700 hover:bg-red-800 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                        <button type="button" wire:click="delete"
+                            class="text-white inline-flex items-center bg-red-600 hover:bg-red-800 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#ffffff"
                                 viewBox="0 0 256 256" class="mr-2">
                                 <path
@@ -95,7 +95,7 @@
                     @endif
 
                     <button type="button" wire:click="save"
-                        class="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                        class="text-white inline-flex items-center bg-blue-500 hover:bg-blue-800 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#ffffff"
                             viewBox="0 0 256 256" class="mr-2">
                             <path
@@ -111,6 +111,27 @@
     </div>
 
     <script>
+        window.addEventListener('existingContract', function(e) {
+            var contractNumber = e.detail; // Obtém o valor do evento
+            Swal.fire({
+                title: "Tem certeza disso?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Sim, atualizar",
+                cancelButtonText: "Não, cancelar",
+                reverseButtons: true,
+                html: "Os dados referentes ao <strong>Contrato nº " +
+                    contractNumber +
+                    "</strong> serão atualizados.", // Adiciona o valor ao conteúdo HTML
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    @this.call('contractUpdate')
+                }
+            });
+        });
+
         window.addEventListener('deleteContractMsg', function(e) {
             var contractNumber = e.detail; // Obtém o valor do evento
             Swal.fire({
@@ -122,12 +143,12 @@
                 confirmButtonText: "Sim, atualizar",
                 cancelButtonText: "Não, cancelar",
                 reverseButtons: true,
-                html: "Os dados referentes ao <strong>Contrato Nº " +
+                html: "Os dados referentes ao <strong>Contrato nº " +
                     contractNumber +
-                    "</strong> serão atualizados.", // Adiciona o valor ao conteúdo HTML
+                    "</strong> serão excluídos permanentemente.", // Adiciona o valor ao conteúdo HTML
             }).then((result) => {
                 if (result.isConfirmed) {
-                    @this.call('contractUpdate')
+                    @this.call('contractDelete')
                 }
             });
         });

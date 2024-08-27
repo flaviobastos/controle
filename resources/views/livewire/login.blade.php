@@ -1,7 +1,7 @@
 <div>
-    <section class="bg-gray-50">
+    <section class="bg-gray-200">
         <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-            <a href="#" class="flex items-center mb-6 text-2xl font-semibold text-gray-900">
+            <a href="#" class="flex items-center mb-6 text-xl font-light text-gray-900">
                 Controle de Locação de Equipamentos
             </a>
             <div class="w-full bg-white rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0">
