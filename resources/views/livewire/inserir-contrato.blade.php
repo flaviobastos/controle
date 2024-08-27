@@ -47,7 +47,7 @@
                             Contrato</label>
                         <textarea id="objeto" rows="4" style="resize:none" wire:model.defer="objeto"
                             class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-                            placeholder="Escreva o objeto do contrato" required="" maxlength="50"></textarea>
+                            placeholder="Escreva o objeto do contrato" required="" maxlength="200"></textarea>
                     </div>
 
                     <div class="col-span-2 sm:col-span-1">
@@ -81,7 +81,7 @@
                         Limpar
                     </button>
 
-                    @if ($this->id_contrato != null)
+                    @if (!empty($this->id_contrato))
                         <button type="button" wire:click="delete"
                             class="text-white inline-flex items-center bg-red-600 hover:bg-red-800 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#ffffff"
@@ -111,45 +111,46 @@
     </div>
 
     <script>
-        window.addEventListener('existingContract', function(e) {
-            var contractNumber = e.detail; // Obtém o valor do evento
-            Swal.fire({
-                title: "Tem certeza disso?",
-                icon: "question",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Sim, atualizar",
-                cancelButtonText: "Não, cancelar",
-                reverseButtons: true,
-                html: "Os dados referentes ao <strong>Contrato nº " +
-                    contractNumber +
-                    "</strong> serão atualizados.", // Adiciona o valor ao conteúdo HTML
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    @this.call('contractUpdate')
-                }
+        function handleContractAction(eventType, title, icon, confirmText, cancelText, htmlContent, actionMethod) {
+            window.addEventListener(eventType, function(e) {
+                var contractNumber = e.detail; // Obtém o valor do evento
+                Swal.fire({
+                    title: title,
+                    icon: icon,
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: confirmText,
+                    cancelButtonText: cancelText,
+                    reverseButtons: true,
+                    html: htmlContent.replace('{contractNumber}',
+                        contractNumber), // Substitui o valor no conteúdo HTML
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        @this.call(actionMethod);
+                    }
+                });
             });
-        });
+        }
 
-        window.addEventListener('deleteContractMsg', function(e) {
-            var contractNumber = e.detail; // Obtém o valor do evento
-            Swal.fire({
-                title: "Tem certeza disso?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Sim, atualizar",
-                cancelButtonText: "Não, cancelar",
-                reverseButtons: true,
-                html: "Os dados referentes ao <strong>Contrato nº " +
-                    contractNumber +
-                    "</strong> serão excluídos permanentemente.", // Adiciona o valor ao conteúdo HTML
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    @this.call('contractDelete')
-                }
-            });
-        });
+        // Configurações específicas para cada evento
+        handleContractAction(
+            'existingContract',
+            'Tem certeza disso?',
+            'question',
+            'Sim, atualizar',
+            'Não, cancelar',
+            'Os dados referentes ao <strong>Contrato nº {contractNumber}</strong> serão atualizados.',
+            'contractUpdate'
+        );
+
+        handleContractAction(
+            'deleteContractMsg',
+            'Tem certeza disso?',
+            'warning',
+            'Sim, excluir',
+            'Não, cancelar',
+            'Os dados referentes ao <strong>Contrato nº {contractNumber}</strong> serão excluídos permanentemente.',
+            'contractDelete'
+        );
     </script>

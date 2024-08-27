@@ -19,8 +19,8 @@ return new class extends Migration
             $table->string('responsavel', 30);
             $table->string('nota_fiscal', 5);
             $table->decimal('valor', 11, 2);
-            $table->date('data_pagamento');
-            $table->date('data_manutencao');
+            $table->date('data_pagamento')->nullable();
+            $table->date('data_manutencao')->nullable();
             $table->timestamps();
         });
     }

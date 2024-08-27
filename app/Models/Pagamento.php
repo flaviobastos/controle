@@ -12,6 +12,7 @@ class Pagamento extends Model
     protected $fillable = [
         'contrato_id',
         'vencimento',
+        'responsavel',
         'parcela',
         'nota_fiscal',
         'valor',

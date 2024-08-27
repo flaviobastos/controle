@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('contrato', 11);
             $table->string('fornecedor', 30);
-            $table->text('objeto', 50);
+            $table->text('objeto', 200);
             $table->string('cnpj', 18);
             $table->timestamps();
         });

@@ -11,7 +11,7 @@ class Dashboard extends Component
 {
 
     public $listaContratos;
-    public $listaPagamentos;
+    public $buscar;
 
     public function logout()
     {
@@ -19,24 +19,20 @@ class Dashboard extends Component
         return redirect()->route('login');
     }
 
-    public function listContracts() // Carrega a lista de contratos
+    public function listContracts()
     {
-        $this->listaContratos = Contrato::orderBy('contrato', 'asc')->get();
-    }
-
-    public function listPayments() // Carrega a lista de pagamentos
-    {
-        $this->listaPagamentos = Pagamento::orderBy('vencimento', 'asc')->get();
+        $this->listaContratos = Contrato::with(['pagamentos' => function ($query) {
+            $query->orderBy('vencimento', 'asc')->orderBy('parcela', 'asc');
+        }])
+            ->orderBy('contrato', 'asc')
+            ->get();
     }
 
     public function render()
     {
-        if (!$this->listaContratos) {
-            $this->listContracts();
-        }
-        if (!$this->listaPagamentos) {
-            $this->listPayments();
-        }
+
+        $this->listContracts();
+
         return view('livewire.dashboard');
     }
 }

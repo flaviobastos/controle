@@ -16,9 +16,8 @@ class Contrato extends Model
         'cnpj',
     ];
 
-    public function pagamento()
+    public function pagamentos()
     {
         return $this->hasMany(Pagamento::class);
     }
-
 }

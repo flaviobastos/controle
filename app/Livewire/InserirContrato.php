@@ -18,7 +18,7 @@ class InserirContrato extends Component
     protected $rules = [
         'contrato' => 'required|string|max:11',
         'fornecedor' => 'required|string|max:30',
-        'objeto' => 'required|string|max:50',
+        'objeto' => 'required|string|max:200',
         'cnpj' => 'required|string|max:18',
     ];
 
