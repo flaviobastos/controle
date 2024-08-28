@@ -1,6 +1,10 @@
-<div x-data="{ inserirContrato: false, inserirPagamento: false }">
+<div x-data="{ inserirContrato: false, inserirPagamento: false, editarPagamento: false }">
 
-    {{-- MENU / BARRA DE PESQUISA  --}}
+    <!-- Imagem de Loading -->
+    <img wire:loading src="{{ asset('/images/loading.gif') }}" class="w-40 fixed inset-0 mx-auto my-auto z-50"
+        alt="Loading">
+
+    {{-- Menu / Barra de Pesquisa  --}}
 
     <section class="bg-slate-800 flex flex-row items-center justify-between p-2">
 
@@ -13,7 +17,7 @@
                     d="M120,216a8,8,0,0,1-8,8H48a8,8,0,0,1-8-8V40a8,8,0,0,1,8-8h64a8,8,0,0,1,0,16H56V208h56A8,8,0,0,1,120,216Zm109.66-93.66-40-40a8,8,0,0,0-11.32,11.32L204.69,120H112a8,8,0,0,0,0,16h92.69l-26.35,26.34a8,8,0,0,0,11.32,11.32l40-40A8,8,0,0,0,229.66,122.34Z">
                 </path>
             </svg>
-            Logout
+            Finalizar Sessão (Logout)
         </button>
 
         <div class="flex flex-row items-center justify-center">
@@ -40,6 +44,26 @@
                 Inserir Pagamento
             </button>
 
+            @if ($this->seletorContratos->count() > 1)
+                <div class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#ffffff"
+                        viewBox="0 0 256 256" class="mr-2">
+                        <path
+                            d="M80,64a8,8,0,0,1,8-8H216a8,8,0,0,1,0,16H88A8,8,0,0,1,80,64Zm136,56H88a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Zm0,64H88a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16ZM44,52A12,12,0,1,0,56,64,12,12,0,0,0,44,52Zm0,64a12,12,0,1,0,12,12A12,12,0,0,0,44,116Zm0,64a12,12,0,1,0,12,12A12,12,0,0,0,44,180Z">
+                        </path>
+                    </svg>
+                    <select wire:model.live="id_contrato" id="id_contrato" name="id_contrato"
+                        class="bg-slate-800 text-white text-md text-start py-3 px-2 mr-3 tracking-wider focus:outline-none"
+                        wire:change="listContracts">
+                        <option value="" selected>Exibir Todos os Contratos</option>
+                        @foreach ($seletorContratos as $contrato)
+                            <option value="{{ $contrato->id }}">
+                                {{ $contrato->contrato . ' - ' . $contrato->fornecedor }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            @endif
 
             <div class="bg-gray-50 border border-gray-400 rounded-3xl shadow-md text-nowrap">
                 <div class="flex flex-row items-center justify-center py-1">
@@ -52,7 +76,7 @@
                     </svg>
 
                     <input wire:model.live.debounce.800ms="buscar" name="buscar"
-                        class="appearance-none bg-transparent border-none w-80 text-gray-700 pl-3 tracking-wider focus:outline-none"
+                        class="appearance-none bg-transparent border-none w-48 text-gray-700 pl-3 tracking-wider focus:outline-none"
                         maxlength="30" type="text" placeholder="Buscar" aria-label="Campo de pesquisa">
 
                     <button wire:click="clear"
@@ -74,7 +98,7 @@
 
     </section>
 
-    @if ($this->listaContratos->isNotEmpty())
+    @if ($this->listaPagamentos->isNotEmpty())
         <div class="flex flex-col items-center justify-center">
             <div class="relative overflow-x-auto shadow-md">
                 <table class="w-screen h-full text-sm font-light text-left text-gray-600">
@@ -108,7 +132,7 @@
                             <th scope="col" class="w-32 px-6 py-6">
                                 Data do Pgto
                             </th>
-                            <th scope="col" class="w-36 px-6 py-6">
+                            <th scope="col" class="w-44 px-6 py-6">
                                 Valor (R$)
                             </th>
                             <th scope="col" class="w-36 px-6 py-6">
@@ -126,7 +150,7 @@
                             @if ($lastContractId !== null && $lastContractId !== $contrato->id)
                                 <!-- Linha separadora entre contratos -->
                                 <tr>
-                                    <td colspan="11" class="py-0.5 bg-gray-300"></td>
+                                    <td colspan="11" class="py-0.5 bg-gray-400"></td>
                                 </tr>
                             @endif
                             @foreach ($contrato->pagamentos as $pagamento)
@@ -139,17 +163,16 @@
                                         {{ $contrato->contrato }}
                                     </td>
                                     <td class="px-2 py-6 text-start">
-                                        {{ $contrato->fornecedor }}
+                                        {{ substr($contrato->fornecedor, 0, 30) }}
                                     </td>
                                     <td class="px-2 py-6 text-start">
-                                        {{ substr($contrato->objeto, 0, 50) }} <span
-                                            class="lowercase text-xs cursor-pointer font-medium underline">(visualizar)</span>
+                                        {{ substr($contrato->objeto, 0, 40) }}
                                     </td>
                                     <td class="py-6 text-center">
                                         {{ $pagamento->parcela }}
                                     </td>
                                     <td class="px-2 py-6">
-                                        {{ $pagamento->responsavel }}
+                                        {{ substr($pagamento->responsavel, 0, 20) }}
                                     </td>
                                     <td class="py-6 text-center">
                                         {{ $pagamento->nota_fiscal }}
@@ -168,12 +191,13 @@
                                             Sem Registro
                                         @endif
                                     </td>
-                                    <td class="flex items-center justify-between px-3 py-6">
+                                    <td class="flex items-center justify-between px-3 py-6 h-full">
                                         <div>(R$)</div>
                                         <div>{{ number_format($pagamento->valor, 2, ',', '.') }}</div>
                                     </td>
                                     <td class="bg-gray-100 border">
-                                        <button wire:click=""
+                                        <button wire:click="editPayment({{ $pagamento->id }})"
+                                            x-on:click="editarPagamento = true"
                                             class="w-full h-full px-2 py-2 text-xs inline-flex items-center justify-center text-center hover:bg-gray-300 duration-500 uppercase">
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
                                                 fill="currentColor" class="size-5 mr-2">
@@ -198,7 +222,7 @@
                             <td colspan="9"
                                 class="bg-gray-100 text-end uppercase font-semibold tracking-widest px-2">Valor Total:
                             </td>
-                            <td class="flex items-center justify-between px-3 py-6 font-semibold border">
+                            <td class="flex items-center justify-between px-3 py-6 font-medium border">
                                 <div>(R$)</div>
                                 <div>{{ number_format($valorTotal, 2, ',', '.') }}</div>
                             </td>
@@ -226,4 +250,58 @@
         </div>
     </div>
 
+    <div x-show="editarPagamento" x-cloak>
+        <div class="fixed z-50 inset-0 overflow-x-hidden overflow-y-hidden">
+            <div class="flex flex-col items-center justify-center h-screen w-full bg-slate-700 bg-opacity-90">
+                @livewire('editar-pagamento')
+            </div>
+        </div>
+    </div>
+
 </div>
+
+<script>
+    function handleContractAction(eventType, title, icon, confirmText, cancelText, htmlContent, actionMethod) {
+        window.addEventListener(eventType, function(e) {
+            var contractNumber = e.detail; // Obtém o valor do evento
+            Swal.fire({
+                title: title,
+                icon: icon,
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: confirmText,
+                cancelButtonText: cancelText,
+                reverseButtons: true,
+                html: htmlContent.replace('{contractNumber}',
+                    contractNumber), // Substitui o valor no conteúdo HTML
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    @this.call(actionMethod);
+                }
+            });
+        });
+    }
+
+    // Configurações específicas para cada evento
+
+    handleContractAction(
+        'existingContract',
+        'Tem certeza disso?',
+        'question',
+        'Sim, atualizar',
+        'Não, cancelar',
+        'Os dados referentes ao <strong>Contrato nº {contractNumber}</strong> serão substituídos.',
+        'contractUpdate'
+    );
+
+    handleContractAction(
+        'deleteContractMsg',
+        'Tem certeza disso?',
+        'warning',
+        'Sim, excluir',
+        'Não, cancelar',
+        'Os dados referentes ao <strong>Contrato nº {contractNumber}</strong> serão excluídos permanentemente.',
+        'contractDelete'
+    );
+</script>

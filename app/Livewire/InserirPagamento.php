@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Contrato;
 use App\Models\Pagamento;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class InserirPagamento extends Component
@@ -20,13 +21,18 @@ class InserirPagamento extends Component
 
     protected $rules = [
         'responsavel' => 'required|string|max:30',
-        'vencimento' => 'required|date',
+        'vencimento' => 'required|string',
         'parcela' => 'required|string|max:5',
         'nota_fiscal' => 'required|string|max:5',
         'valor' => 'required|max:14',
         'data_pagamento' => 'nullable|date',
         'data_manutencao' => 'nullable|date',
     ];
+
+    public function updateRender() // Atualiza o dashboard e lista de contratos
+    {
+        $this->dispatch('updateRender');
+    }
 
     public function save() // Salva o pagamento
     {
@@ -64,7 +70,13 @@ class InserirPagamento extends Component
         $this->dispatch($type);
     }
 
-    public function clear() // Limpar os campos de cadastro
+    public function closeWindow() // Atualiza as informações ao fechar a janela
+    {
+        $this->reset();
+        $this->updateRender();
+    }
+
+    public function clear() // Limpar os campos de pagamento
     {
         $this->reset();
     }
@@ -74,12 +86,10 @@ class InserirPagamento extends Component
         $this->listaContratos = Contrato::orderBy('fornecedor', 'asc')->get();
     }
 
+    #[On('updateRender')] // Atualiza o render após atualizações
     public function render()
     {
-        if (!$this->listaContratos) {
-            $this->listContracts();
-        }
-
+        $this->listContracts();
         return view('livewire.inserir-pagamento');
     }
 }

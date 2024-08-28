@@ -1,5 +1,7 @@
-    <!-- Main modal -->
     <div class="relative p-4 w-full max-w-md max-h-full">
+        <!-- Imagem de Loading -->
+        <img wire:loading src="{{ asset('/images/loading.gif') }}" class="w-40 fixed inset-0 mx-auto my-auto z-50"
+            alt="Loading">
         <!-- Modal content -->
         <div class="relative bg-white rounded-lg shadow">
             <!-- Modal header -->
@@ -7,7 +9,7 @@
                 <p class="text-lg font-semibold text-gray-900">
                     Inserir Pagamento
                 </p>
-                <button type="button" wire:click="clear" x-on:click="inserirPagamento=false"
+                <button type="button" wire:click="closeWindow" x-on:click="inserirPagamento=false"
                     class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center">
                     <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                         viewBox="0 0 14 14">
@@ -68,7 +70,7 @@
                         <label for="valor" class="block mb-2 text-sm font-medium text-gray-900">Valor</label>
                         <input type="text" name="valor" id="valor" wire:model.defer="valor"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                            placeholder="R$ 0,00" required="" maxlength="13" x-mask:dynamic="$money($input, ',')"">
+                            placeholder="R$ 0,00" required="" maxlength="14" x-mask:dynamic="$money($input, ',')">
                     </div>
 
                 </div>
@@ -107,48 +109,3 @@
             </form>
         </div>
     </div>
-
-    <script>
-        function handleContractAction(eventType, title, icon, confirmText, cancelText, htmlContent, actionMethod) {
-            window.addEventListener(eventType, function(e) {
-                var contractNumber = e.detail; // Obtém o valor do evento
-                Swal.fire({
-                    title: title,
-                    icon: icon,
-                    showCancelButton: true,
-                    confirmButtonColor: "#3085d6",
-                    cancelButtonColor: "#d33",
-                    confirmButtonText: confirmText,
-                    cancelButtonText: cancelText,
-                    reverseButtons: true,
-                    html: htmlContent.replace('{contractNumber}',
-                        contractNumber), // Substitui o valor no conteúdo HTML
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        @this.call(actionMethod);
-                    }
-                });
-            });
-        }
-
-        // Configurações específicas para cada evento
-        handleContractAction(
-            'existingContract',
-            'Tem certeza disso?',
-            'question',
-            'Sim, atualizar',
-            'Não, cancelar',
-            'Os dados referentes ao <strong>Contrato nº {contractNumber}</strong> serão atualizados.',
-            'contractUpdate'
-        );
-
-        handleContractAction(
-            'deleteContractMsg',
-            'Tem certeza disso?',
-            'warning',
-            'Sim, excluir',
-            'Não, cancelar',
-            'Os dados referentes ao <strong>Contrato nº {contractNumber}</strong> serão excluídos permanentemente.',
-            'contractDelete'
-        );
-    </script>

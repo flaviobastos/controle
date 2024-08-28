@@ -34,11 +34,11 @@
     }
 
     window.addEventListener('success', function() {
-        showToast("success", "Operação realizada com sucesso");
+        showToast("success", "Operação executada com sucesso");
     });
 
     window.addEventListener('error', function() {
-        showToast("error", "Não foi possível realizar a operação");
+        showToast("error", "Não foi possível executar a operação");
     });
 </script>
 

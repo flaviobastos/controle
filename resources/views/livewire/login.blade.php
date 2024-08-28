@@ -1,4 +1,7 @@
 <div>
+    <!-- Imagem de Loading -->
+    <img wire:loading src="{{ asset('/images/loading.gif') }}" class="w-40 fixed inset-0 mx-auto my-auto z-50"
+        alt="Loading">
     <section class="bg-gray-200">
         <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
             <a href="#" class="flex items-center mb-6 text-xl font-light text-gray-900">
@@ -46,7 +49,8 @@
                         </div>
                         <button type="submit" wire:click="login"
                             onclick="this.disabled = true; this.style.backgroundColor = '#515A5A'; this.style.cursor='wait'; setTimeout(() => this.disabled = false, 5000)"
-                            class="w-full text-white bg-blue-600 hover:bg-blue-800 duration-300 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Acessar sua conta</button>
+                            class="w-full text-white bg-blue-600 hover:bg-blue-800 duration-300 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Acessar
+                            sua conta</button>
                         <p class="text-sm font-light text-gray-500">
                             Ainda não tem acesso? <a href="#"
                                 class="font-medium text-primary-600 hover:underline">Solicitar</a>

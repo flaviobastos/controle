@@ -17,7 +17,7 @@ class InserirContrato extends Component
 
     protected $rules = [
         'contrato' => 'required|string|max:11',
-        'fornecedor' => 'required|string|max:30',
+        'fornecedor' => 'required|string|max:50',
         'objeto' => 'required|string|max:200',
         'cnpj' => 'required|string|max:18',
     ];
@@ -27,7 +27,18 @@ class InserirContrato extends Component
         $this->reset();
     }
 
-    public function dispatchNotification($type)
+    public function closeWindow() // Atualiza as informações ao fechar a janela
+    {
+        $this->reset();
+        $this->updateRender();
+    }
+
+    public function updateRender() // Atualiza o dashboard
+    {
+        $this->dispatch('updateRender');
+    }
+
+    public function dispatchNotification($type) // Emite as mensagens de notificação
     {
         $this->dispatch($type);
     }
@@ -62,18 +73,6 @@ class InserirContrato extends Component
         $this->dispatch('deleteContractMsg',  $this->contrato);
     }
 
-    public function contractDelete() // Deleta o contrato
-    {
-        $contractDeleted = Contrato::destroy($this->id_contrato); // Deleta o registro com o ID especificado
-        $this->clear();
-
-        if ($contractDeleted) {   // Se o contrato for deletado
-            $this->dispatchNotification('success');
-        } else {
-            $this->dispatchNotification('error');
-        }
-    }
-
     public function processContractCreation($validated) // Verifica se o contrato já existe
     {
         // Verifica se o contrato já existe
@@ -94,7 +93,6 @@ class InserirContrato extends Component
         } else {
             $this->dispatchNotification('error');
         }
-
         $this->clear();
     }
 
@@ -109,16 +107,24 @@ class InserirContrato extends Component
         } else {
             $this->dispatchNotification('error');
         }
+        $this->clear();
+    }
 
+    public function contractDelete() // Deleta o contrato
+    {
+        $contractDeleted = Contrato::destroy($this->id_contrato); // Deleta o registro com o ID especificado
+
+        if ($contractDeleted) {   // Se o contrato for deletado
+            $this->dispatchNotification('success');
+        } else {
+            $this->dispatchNotification('error');
+        }
         $this->clear();
     }
 
     public function render() // Renderiza a página
     {
-        if (!$this->listaContratos) {
-            $this->listContracts();
-        }
-
+        $this->listContracts();
         return view('livewire.inserir-contrato');
     }
 }
