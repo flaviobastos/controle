@@ -55,7 +55,7 @@
                             Contrato</label>
                         <input type="text" name="contrato" id="contrato" wire:model.defer="contrato"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                            placeholder="N. Contrato" required="" maxlength="11">
+                            placeholder="000000/0000" required="" maxlength="11" x-mask="999999/9999">
                     </div>
 
                     <div class="col-span-2 sm:col-span-1">
@@ -63,7 +63,7 @@
                             Fornecedor</label>
                         <input type="text" name="cnpj" id="cnpj" wire:model.defer="cnpj"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                            placeholder="Digite o CNPJ" required="" maxlength="18">
+                            placeholder="00.000.000/0000-00" required="" maxlength="18" x-mask="99.999.999/9999-99">
                     </div>
 
                 </div>

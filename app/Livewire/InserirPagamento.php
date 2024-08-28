@@ -36,6 +36,14 @@ class InserirPagamento extends Component
         // Adiciona o contrato_id aos dados validados
         $validated['contrato_id'] = $this->contrato_id;
 
+        // Remove os separadores de milhar (pontos) e converte a vírgula decimal para ponto
+        $this->valor = str_replace('.', '', $this->valor); // Remove os pontos
+        $this->valor = str_replace(',', '.', $this->valor); // Converte a vírgula decimal para ponto
+        $validated['valor'] = $this->valor;
+
+        // Converte a data de 'dd/mm/yyyy' para 'yyyy-mm-dd' para ser aceita pelo banco de dados
+        $validated['vencimento'] = \DateTime::createFromFormat('d/m/Y', $this->vencimento)->format('Y-m-d');
+
         // Assegura que os campos data_pagamento e data_manutencao estejam presentes
         $validated['data_pagamento'] = $this->data_pagamento ?? null;
         $validated['data_manutencao'] = $this->data_manutencao ?? null;

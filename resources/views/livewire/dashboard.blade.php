@@ -81,37 +81,37 @@
                     <thead
                         class="text-xs tracking-wider text-gray-700 uppercase bg-gray-200 border-1 text-nowrap text-center">
                         <tr>
-                            <th scope="col" class="px-6 py-6">
+                            <th scope="col" class="w-32 px-6 py-6">
                                 Vencimento
                             </th>
-                            <th scope="col" class="px-6 py-6">
+                            <th scope="col" class="w-32 px-6 py-6">
                                 Contrato
                             </th>
-                            <th scope="col" class="px-6 py-6">
+                            <th scope="col" class="w-52 px-6 py-6">
                                 Fornecedor
                             </th>
                             <th scope="col" class="px-6 py-6">
                                 Objeto do Contrato
                             </th>
-                            <th scope="col" class="px-6 py-6">
+                            <th scope="col" class="w-32 px-6 py-6">
                                 Parcela
                             </th>
-                            <th scope="col" class="px-6 py-6">
+                            <th scope="col" class="w-44 px-6 py-6">
                                 Responsável
                             </th>
-                            <th scope="col" class="px-6 py-6">
+                            <th scope="col" class="w-32 px-6 py-6">
                                 Nota Fiscal
                             </th>
-                            <th scope="col" class="px-6 py-6">
-                                Valor (R$)
-                            </th>
-                            <th scope="col" class="px-6 py-6">
-                                Data do Pgto
-                            </th>
-                            <th scope="col" class="px-6 py-6">
+                            <th scope="col" class="w-32 px-6 py-6">
                                 Data Manutenção
                             </th>
-                            <th scope="col" class="px-6 py-6">
+                            <th scope="col" class="w-32 px-6 py-6">
+                                Data do Pgto
+                            </th>
+                            <th scope="col" class="w-36 px-6 py-6">
+                                Valor (R$)
+                            </th>
+                            <th scope="col" class="w-36 px-6 py-6">
                                 <div class="flex items-center justify-center">
                                     Editar
                                 </div>
@@ -132,49 +132,55 @@
                             @foreach ($contrato->pagamentos as $pagamento)
                                 <tr class="bg-white border-b">
                                     <th scope="row"
-                                        class="py-8 font-medium bg-gray-100  text-gray-900 whitespace-nowrap text-center">
+                                        class="py-6 font-medium bg-gray-100 text-gray-900 whitespace-nowrap text-center border">
                                         {{ date('d/m/Y', strtotime($pagamento->vencimento)) }}
                                     </th>
-                                    <td class="px-2 py-8 text-center">
+                                    <td class="px-2 py-6 text-center">
                                         {{ $contrato->contrato }}
                                     </td>
-                                    <td class="px-2 py-8 text-start">
+                                    <td class="px-2 py-6 text-start">
                                         {{ $contrato->fornecedor }}
                                     </td>
-                                    <td class="px-2 py-8 text-start">
-                                        {{ substr($contrato->objeto, 0, 40) }} <span
+                                    <td class="px-2 py-6 text-start">
+                                        {{ substr($contrato->objeto, 0, 50) }} <span
                                             class="lowercase text-xs cursor-pointer font-medium underline">(visualizar)</span>
                                     </td>
-                                    <td class="py-8 text-center">
+                                    <td class="py-6 text-center">
                                         {{ $pagamento->parcela }}
                                     </td>
-                                    <td class="px-2 py-8">
+                                    <td class="px-2 py-6">
                                         {{ $pagamento->responsavel }}
                                     </td>
-                                    <td class="py-8 text-center">
+                                    <td class="py-6 text-center">
                                         {{ $pagamento->nota_fiscal }}
                                     </td>
-                                    <td class="px-2 py-8">
-                                        R$ {{ number_format($pagamento->valor, 2, ',', '.') }}
-                                    </td>
-                                    <td class="px-2 py-8">
-                                        @if (!is_null($pagamento->data_pagamento))
-                                            {{ date('d/m/Y', strtotime($pagamento->data_pagamento)) }}
-                                        @endif
-                                    </td>
-                                    <td class="px-2 py-8">
+                                    <td class="px-2 py-6 text-center">
                                         @if (!is_null($pagamento->data_pagamento))
                                             {{ date('d/m/Y', strtotime($pagamento->data_manutencao)) }}
+                                        @else
+                                            Sem Registro
                                         @endif
                                     </td>
-                                    <td class="bg-gray-100">
+                                    <td class="px-2 py-6 text-center">
+                                        @if (!is_null($pagamento->data_pagamento))
+                                            {{ date('d/m/Y', strtotime($pagamento->data_pagamento)) }}
+                                        @else
+                                            Sem Registro
+                                        @endif
+                                    </td>
+                                    <td class="flex items-center justify-between px-3 py-6">
+                                        <div>(R$)</div>
+                                        <div>{{ number_format($pagamento->valor, 2, ',', '.') }}</div>
+                                    </td>
+                                    <td class="bg-gray-100 border">
                                         <button wire:click=""
-                                            class="w-full h-full px-2 py-2 inline-flex items-center text-center hover:bg-gray-300 duration-500 uppercase">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                                fill="#000000" viewBox="0 0 256 256" class="mr-2">
+                                            class="w-full h-full px-2 py-2 text-xs inline-flex items-center justify-center text-center hover:bg-gray-300 duration-500 uppercase">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                fill="currentColor" class="size-5 mr-2">
                                                 <path
-                                                    d="M227.31,73.37,182.63,28.68a16,16,0,0,0-22.63,0L36.69,152A15.86,15.86,0,0,0,32,163.31V208a16,16,0,0,0,16,16H92.69A15.86,15.86,0,0,0,104,219.31L227.31,96a16,16,0,0,0,0-22.63ZM51.31,160,136,75.31,152.69,92,68,176.68ZM48,179.31,76.69,208H48Zm48,25.38L79.31,188,164,103.31,180.69,120Zm96-96L147.31,64l24-24L216,84.68Z">
-                                                </path>
+                                                    d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32l8.4-8.4Z" />
+                                                <path
+                                                    d="M5.25 5.25a3 3 0 0 0-3 3v10.5a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3V13.5a.75.75 0 0 0-1.5 0v5.25a1.5 1.5 0 0 1-1.5 1.5H5.25a1.5 1.5 0 0 1-1.5-1.5V8.25a1.5 1.5 0 0 1 1.5-1.5h5.25a.75.75 0 0 0 0-1.5H5.25Z" />
                                             </svg>
                                             Editar Pgto
                                         </button>
@@ -186,6 +192,19 @@
                             @endphp
                         @endforeach
                     </tbody>
+                    <!-- Exibe o total abaixo da tabela -->
+                    <tfoot>
+                        <tr>
+                            <td colspan="9"
+                                class="bg-gray-100 text-end uppercase font-semibold tracking-widest px-2">Valor Total:
+                            </td>
+                            <td class="flex items-center justify-between px-3 py-6 font-semibold border">
+                                <div>(R$)</div>
+                                <div>{{ number_format($valorTotal, 2, ',', '.') }}</div>
+                            </td>
+                            <td colspan="1" class="bg-gray-100"></td>
+                        </tr>
+                    </tfoot>
                 </table>
             </div>
         </div>

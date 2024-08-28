@@ -11,6 +11,7 @@ class Dashboard extends Component
 {
 
     public $listaContratos;
+    public $valorTotal;
     public $buscar;
 
     public function logout()
@@ -26,6 +27,9 @@ class Dashboard extends Component
         }])
             ->orderBy('contrato', 'asc')
             ->get();
+
+        // Somando diretamente no banco de dados
+        $this->valorTotal = Pagamento::whereIn('contrato_id', $this->listaContratos->pluck('id'))->sum('valor');
     }
 
     public function render()
