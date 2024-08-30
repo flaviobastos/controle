@@ -19,6 +19,10 @@ class InserirPagamento extends Component
     public $data_pagamento;
     public $data_manutencao;
 
+    public $parcelas = 1; // Valor inicial
+    public $valores = [];
+    public $notas_fiscais = [];
+
     protected $rules = [
         'responsavel' => 'required|string|max:30',
         'vencimento' => 'required|string',
@@ -28,6 +32,28 @@ class InserirPagamento extends Component
         'data_pagamento' => 'nullable|date',
         'data_manutencao' => 'nullable|date',
     ];
+
+    public function updatedParcelas($qtdParcelas)
+    {
+        $qtdParcelas = max(1, intval($qtdParcelas)); // Garantir que o valor seja pelo menos 1
+        $this->parcelas = $qtdParcelas;
+
+        // Ajusta os arrays $valores e $notas_fiscais de acordo com o número de parcelas
+        $this->valores = array_pad(array_slice($this->valores, 0, $this->parcelas), $this->parcelas, '');
+        $this->notas_fiscais = array_pad(array_slice($this->notas_fiscais, 0, $this->parcelas), $this->parcelas, '');
+    }
+
+    public function mount()
+    {
+        // Garantir que ao montar o componente sempre exista pelo menos um campo
+        if (count($this->valores) < 1) {
+            $this->valores[] = '';
+        }
+
+        if (count($this->notas_fiscais) < 1) {
+            $this->notas_fiscais[] = '';
+        }
+    }
 
     public function updateRender() // Atualiza o dashboard e lista de contratos
     {
@@ -90,6 +116,7 @@ class InserirPagamento extends Component
     public function render()
     {
         $this->listContracts();
+        $this->mount();
         return view('livewire.inserir-pagamento');
     }
 }

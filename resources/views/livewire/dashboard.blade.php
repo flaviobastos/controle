@@ -136,7 +136,7 @@
                         </tr>
                     </thead>
                     <div
-                        class="bg-white flex flex-col items-start justify-center h-16 uppercase text-sm font-light tracking-wider border px-5 underline">
+                        class="bg-white flex flex-col items-start justify-center h-16 uppercase text-sm font-medium tracking-wider border px-5 ">
                         <p>{{ $contrato->fornecedor }} - {{ $contrato->cnpj }}</p>
                         <p>{{ $contrato->objeto }}</p>
                     </div>
@@ -192,7 +192,7 @@
                                 class="bg-gradient-to-b from-gray-50 to-gray-200 text-end uppercase font-semibold tracking-widest px-2">
                                 Valor Total:
                             </td>
-                            <td class="flex items-center justify-between h-full px-3 font-medium border">
+                            <td class="flex items-center justify-between h-full px-3 font-medium border border-t-0">
                                 <div>(R$)</div>
                                 <div>{{ number_format($valorTotalContrato, 2, ',', '.') }}</div>
                             </td>

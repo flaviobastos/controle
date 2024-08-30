@@ -27,7 +27,7 @@
                         <label for="contrato_id" class="block mb-2 text-sm font-medium text-gray-900">Selecionar
                             Contrato / Fornecedor</label>
                         <select id="contrato_id" wire:model.live="contrato_id"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5">
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5">
                             <option value="" selected=""Ï>Selecione o Contrato</option>
                             @foreach ($listaContratos as $contrato)
                                 <option value="{{ $contrato->id }}">
@@ -40,39 +40,49 @@
                         <label for="responsavel"
                             class="block mb-2 text-sm font-medium text-gray-900">Responsável</label>
                         <input type="text" name="responsavel" id="responsavel" wire:model.defer="responsavel"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 uppercase"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 uppercase"
                             placeholder="Responsável pelo serviço ou material" required="" maxlength="30">
                     </div>
 
                     <div class="col-span-1">
                         <label for="vencimento" class="block mb-2 text-sm font-medium text-gray-900">Vencimento</label>
                         <input name="vencimento" id="vencimento" wire:model.defer="vencimento"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
                             placeholder="{{ date('d/m/Y') }}" required="" x-mask="99/99/9999">
                     </div>
 
                     <div class="col-span-1">
-                        <label for="parcela" class="block mb-2 text-sm font-medium text-gray-900">Parcela</label>
-                        <input type="text" name="parcela" id="parcela" wire:model.defer="parcela"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                            placeholder="00/00" required="" maxlength="5" x-mask="99/99">
+                        <label for="parcelas" class="block mb-2 text-sm font-medium text-gray-900">Qtd.
+                            Parcela(s)</label>
+                        <input type="number" name="parcelas" id="parcelas" wire:model.live="parcelas"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
+                            placeholder="" min="1" max="12" required="">
                     </div>
 
-                    <div class="col-span-1">
-                        <label for="nota_fiscal" class="block mb-2 text-sm font-medium text-gray-900">Nota
-                            Fiscal</label>
-                        <input type="text" name="nota_fiscal" id="nota_fiscal" wire:model.defer="nota_fiscal"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                            placeholder="00000" required="" maxlength="5" x-mask="99999">
-                    </div>
+                    @foreach ($valores as $index => $valor)
+                        <div class="col-span-1">
+                            <label for="nota_fiscal_{{ $index }}"
+                                class="block mb-2 text-sm font-medium text-gray-900">
+                                Nota Fiscal ({{ $index + 1 }}ª Parcela)
+                            </label>
+                            <input type="text" name="nota_fiscal_{{ $index }}"
+                                id="nota_fiscal_{{ $index }}"
+                                wire:model.defer="notas_fiscais.{{ $index }}"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
+                                placeholder="00000" required="" maxlength="5" x-mask="99999">
+                        </div>
 
-                    <div class="col-span-1">
-                        <label for="valor" class="block mb-2 text-sm font-medium text-gray-900">Valor</label>
-                        <input type="text" name="valor" id="valor" wire:model.defer="valor"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                            placeholder="R$ 0,00" required="" maxlength="14" x-mask:dynamic="$money($input, ',')">
-                    </div>
-
+                        <div class="col-span-1">
+                            <label for="valor_{{ $index }}" class="block mb-2 text-sm font-medium text-gray-900">
+                                Valor ({{ $index + 1 }}ª Parcela)
+                            </label>
+                            <input type="text" name="valor_{{ $index }}" id="valor_{{ $index }}"
+                                wire:model.defer="valores.{{ $index }}"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
+                                placeholder="R$ 0,00" required="" maxlength="14"
+                                x-mask:dynamic="$money($input, ',')">
+                        </div>
+                    @endforeach
                 </div>
 
                 <div class="flex flex-row items-center justify-between">
