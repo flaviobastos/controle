@@ -40,7 +40,7 @@
                         <label for="fornecedor" class="block mb-2 text-sm font-medium text-gray-900">Razão Social do
                             Fornecedor</label>
                         <input type="text" name="fornecedor" id="fornecedor" wire:model.defer="fornecedor"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 uppercase"
                             placeholder="Digite o nome do fornecedor" required="" maxlength="50">
                     </div>
 
@@ -48,7 +48,7 @@
                         <label for="objeto" class="block mb-2 text-sm font-medium text-gray-900">Objeto do
                             Contrato</label>
                         <textarea id="objeto" rows="4" style="resize:none" wire:model.defer="objeto"
-                            class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                            class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 uppercase"
                             placeholder="Escreva o objeto do contrato" required="" maxlength="200"></textarea>
                     </div>
 
@@ -111,3 +111,49 @@
             </form>
         </div>
     </div>
+
+    <script>
+        function handleContractAction(eventType, title, icon, confirmText, cancelText, htmlContent, actionMethod) {
+            window.addEventListener(eventType, function(e) {
+                var contractNumber = e.detail; // Obtém o valor do evento
+                Swal.fire({
+                    title: title,
+                    icon: icon,
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: confirmText,
+                    cancelButtonText: cancelText,
+                    reverseButtons: true,
+                    html: htmlContent.replace('{contractNumber}',
+                        contractNumber), // Substitui o valor no conteúdo HTML
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        @this.call(actionMethod);
+                    }
+                });
+            });
+        }
+
+        // Configurações específicas para cada evento
+
+        handleContractAction(
+            'existingContract',
+            'Tem certeza disso?',
+            'question',
+            'Sim, atualizar',
+            'Não, cancelar',
+            'Os dados referentes ao <strong>Contrato nº {contractNumber}</strong> serão substituídos.',
+            'contractUpdate'
+        );
+
+        handleContractAction(
+            'deleteContractMsg',
+            'Tem certeza disso?',
+            'warning',
+            'Sim, excluir',
+            'Não, cancelar',
+            'Os dados referentes ao <strong>Contrato nº {contractNumber}</strong> serão excluídos permanentemente.',
+            'contractDelete'
+        );
+    </script>

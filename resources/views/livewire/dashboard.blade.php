@@ -44,26 +44,24 @@
                 Inserir Pagamento
             </button>
 
-            @if ($this->seletorContratos->count() > 1)
-                <div class="flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#ffffff"
-                        viewBox="0 0 256 256" class="mr-2">
-                        <path
-                            d="M80,64a8,8,0,0,1,8-8H216a8,8,0,0,1,0,16H88A8,8,0,0,1,80,64Zm136,56H88a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Zm0,64H88a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16ZM44,52A12,12,0,1,0,56,64,12,12,0,0,0,44,52Zm0,64a12,12,0,1,0,12,12A12,12,0,0,0,44,116Zm0,64a12,12,0,1,0,12,12A12,12,0,0,0,44,180Z">
-                        </path>
-                    </svg>
-                    <select wire:model.live="id_contrato" id="id_contrato" name="id_contrato"
-                        class="bg-slate-800 text-white text-md text-start py-3 px-2 mr-3 tracking-wider focus:outline-none"
-                        wire:change="listContracts">
-                        <option value="" selected>Exibir Todos os Contratos</option>
-                        @foreach ($seletorContratos as $contrato)
-                            <option value="{{ $contrato->id }}">
-                                {{ $contrato->contrato . ' - ' . $contrato->fornecedor }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-            @endif
+            <div class="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#ffffff"
+                    viewBox="0 0 256 256" class="mr-2">
+                    <path
+                        d="M80,64a8,8,0,0,1,8-8H216a8,8,0,0,1,0,16H88A8,8,0,0,1,80,64Zm136,56H88a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Zm0,64H88a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16ZM44,52A12,12,0,1,0,56,64,12,12,0,0,0,44,52Zm0,64a12,12,0,1,0,12,12A12,12,0,0,0,44,116Zm0,64a12,12,0,1,0,12,12A12,12,0,0,0,44,180Z">
+                    </path>
+                </svg>
+                <select wire:model.live="id_contrato" id="id_contrato" name="id_contrato"
+                    class="bg-slate-800 text-white text-md text-start py-3 px-2 mr-3 tracking-wider focus:outline-none"
+                    wire:change="listContracts">
+                    <option value="" selected>Exibir Todos os Contratos</option>
+                    @foreach ($seletorContratos as $contrato)
+                        <option value="{{ $contrato->id }}">
+                            {{ $contrato->contrato . ' - ' . $contrato->fornecedor }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
 
             <div class="bg-gray-50 border border-gray-400 rounded-3xl shadow-md text-nowrap">
                 <div class="flex flex-row items-center justify-center py-1">
@@ -98,141 +96,113 @@
 
     </section>
 
-    @if ($this->listaPagamentos->isNotEmpty())
-        <div class="flex flex-col items-center justify-center">
-            <div class="relative overflow-x-auto shadow-md">
-                <table class="w-screen h-full text-sm font-light text-left text-gray-600">
+    @foreach ($this->listaContratos as $contrato)
+        @php
+            $valorTotalContrato = $contrato->pagamentos->sum('valor');
+        @endphp
+        <div class="flex flex-col items-center justify-center my-5">
+            <div class="relative overflow-x-auto shadow-2xl border border-gray-400">
+                <table class="w-full h-full text-sm font-light text-left text-gray-600">
                     <thead
-                        class="text-xs tracking-wider text-gray-700 uppercase bg-gray-200 border-1 text-nowrap text-center">
+                        class="text-xs tracking-wider text-gray-700 uppercase bg-gradient-to-b from-gray-50 to-gray-200 border-1 text-nowrap text-center h-12">
                         <tr>
-                            <th scope="col" class="w-32 px-6 py-6">
+                            <th scope="col" class="w-32 px-2 border">
                                 Vencimento
                             </th>
-                            <th scope="col" class="w-32 px-6 py-6">
+                            <th scope="col" class="w-32 px-2 border">
                                 Contrato
                             </th>
-                            <th scope="col" class="w-52 px-6 py-6">
-                                Fornecedor
-                            </th>
-                            <th scope="col" class="px-6 py-6">
-                                Objeto do Contrato
-                            </th>
-                            <th scope="col" class="w-32 px-6 py-6">
+                            <th scope="col" class="w-32 px-2 border">
                                 Parcela
                             </th>
-                            <th scope="col" class="w-44 px-6 py-6">
-                                Responsável
+                            <th scope="col" class="px-2 border">
+                                Responsável / Informações Complementares
                             </th>
-                            <th scope="col" class="w-32 px-6 py-6">
+                            <th scope="col" class="w-32 px-6 border">
                                 Nota Fiscal
                             </th>
-                            <th scope="col" class="w-32 px-6 py-6">
+                            <th scope="col" class="w-32 px-6 border">
                                 Data Manutenção
                             </th>
-                            <th scope="col" class="w-32 px-6 py-6">
+                            <th scope="col" class="w-32 px-6 border">
                                 Data do Pgto
                             </th>
-                            <th scope="col" class="w-44 px-6 py-6">
+                            <th scope="col" class="w-36 px-6 border">
                                 Valor (R$)
                             </th>
-                            <th scope="col" class="w-36 px-6 py-6">
-                                <div class="flex items-center justify-center">
-                                    Editar
-                                </div>
+                            <th scope="col" class="w-32 px-2 border">
+                                Editar
                             </th>
                         </tr>
                     </thead>
-                    <tbody>
-                        @php
-                            $lastContractId = null;
-                        @endphp
-                        @foreach ($this->listaContratos as $contrato)
-                            @if ($lastContractId !== null && $lastContractId !== $contrato->id)
-                                <!-- Linha separadora entre contratos -->
-                                <tr>
-                                    <td colspan="11" class="py-0.5 bg-gray-400"></td>
-                                </tr>
-                            @endif
-                            @foreach ($contrato->pagamentos as $pagamento)
-                                <tr class="bg-white border-b">
-                                    <th scope="row"
-                                        class="py-6 font-medium bg-gray-100 text-gray-900 whitespace-nowrap text-center border">
-                                        {{ date('d/m/Y', strtotime($pagamento->vencimento)) }}
-                                    </th>
-                                    <td class="px-2 py-6 text-center">
-                                        {{ $contrato->contrato }}
-                                    </td>
-                                    <td class="px-2 py-6 text-start">
-                                        {{ substr($contrato->fornecedor, 0, 30) }}
-                                    </td>
-                                    <td class="px-2 py-6 text-start">
-                                        {{ substr($contrato->objeto, 0, 40) }}
-                                    </td>
-                                    <td class="py-6 text-center">
-                                        {{ $pagamento->parcela }}
-                                    </td>
-                                    <td class="px-2 py-6">
-                                        {{ substr($pagamento->responsavel, 0, 20) }}
-                                    </td>
-                                    <td class="py-6 text-center">
-                                        {{ $pagamento->nota_fiscal }}
-                                    </td>
-                                    <td class="px-2 py-6 text-center">
-                                        @if (!is_null($pagamento->data_pagamento))
-                                            {{ date('d/m/Y', strtotime($pagamento->data_manutencao)) }}
-                                        @else
-                                            Sem Registro
-                                        @endif
-                                    </td>
-                                    <td class="px-2 py-6 text-center">
-                                        @if (!is_null($pagamento->data_pagamento))
-                                            {{ date('d/m/Y', strtotime($pagamento->data_pagamento)) }}
-                                        @else
-                                            Sem Registro
-                                        @endif
-                                    </td>
-                                    <td class="flex items-center justify-between px-3 py-6 h-full">
-                                        <div>(R$)</div>
-                                        <div>{{ number_format($pagamento->valor, 2, ',', '.') }}</div>
-                                    </td>
-                                    <td class="bg-gray-100 border">
-                                        <button wire:click="editPayment({{ $pagamento->id }})"
-                                            x-on:click="editarPagamento = true"
-                                            class="w-full h-full px-2 py-2 text-xs inline-flex items-center justify-center text-center hover:bg-gray-300 duration-500 uppercase">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                                fill="currentColor" class="size-5 mr-2">
-                                                <path
-                                                    d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32l8.4-8.4Z" />
-                                                <path
-                                                    d="M5.25 5.25a3 3 0 0 0-3 3v10.5a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3V13.5a.75.75 0 0 0-1.5 0v5.25a1.5 1.5 0 0 1-1.5 1.5H5.25a1.5 1.5 0 0 1-1.5-1.5V8.25a1.5 1.5 0 0 1 1.5-1.5h5.25a.75.75 0 0 0 0-1.5H5.25Z" />
-                                            </svg>
-                                            Editar Pgto
-                                        </button>
-                                    </td>
-                                </tr>
-                            @endforeach
-                            @php
-                                $lastContractId = $contrato->id;
-                            @endphp
-                        @endforeach
-                    </tbody>
-                    <!-- Exibe o total abaixo da tabela -->
-                    <tfoot>
+                    <div
+                        class="bg-white flex flex-col items-start justify-center h-16 uppercase text-sm font-light tracking-wider border px-5 underline">
+                        <p>{{ $contrato->fornecedor }} - {{ $contrato->cnpj }}</p>
+                        <p>{{ $contrato->objeto }}</p>
+                    </div>
+                    @foreach ($contrato->pagamentos as $pagamento)
+                        <tbody>
+                            <tr class="bg-white border-b">
+                                <th scope="row"
+                                    class="font-medium bg-gray-100 text-gray-900 whitespace-nowrap text-center border">
+                                    {{ date('d/m/Y', strtotime($pagamento->vencimento)) }}
+                                </th>
+                                <td class="px-2 text-center border">
+                                    {{ $contrato->contrato }}
+                                </td>
+                                <td class="text-center border">
+                                    {{ $pagamento->parcela }}
+                                </td>
+                                <td class="px-2 text-center border">
+                                    {{ substr($pagamento->responsavel, 0, 80) }}
+                                </td>
+                                <td class="text-center border">
+                                    {{ $pagamento->nota_fiscal }}
+                                </td>
+                                <td class="px-2 text-center border">
+                                    {{ $pagamento->data_manutencao ? $pagamento->data_manutencao->format('d/m/Y') : 'Sem Registro' }}
+                                </td>
+                                <td class="px-2 text-center border">
+                                    {{ $pagamento->data_pagamento ? $pagamento->data_pagamento->format('d/m/Y') : 'Sem Registro' }}
+                                </td>
+                                <td class="flex flex-row items-center justify-between px-2 min-h-12">
+                                    <div>(R$)</div>
+                                    <div>{{ number_format($pagamento->valor, 2, ',', '.') }}</div>
+                                </td>
+                                <td class="bg-gray-100 border">
+                                    <button wire:click="editPayment({{ $pagamento->id }})"
+                                        x-on:click="editarPagamento = true"
+                                        class="w-full h-full px-2 py-2 text-xs inline-flex items-center justify-center text-center hover:bg-gray-300 duration-500 uppercase">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                            fill="currentColor" class="size-5 mr-2">
+                                            <path
+                                                d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32l8.4-8.4Z" />
+                                            <path
+                                                d="M5.25 5.25a3 3 0 0 0-3 3v10.5a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3V13.5a.75.75 0 0 0-1.5 0v5.25a1.5 1.5 0 0 1-1.5 1.5H5.25a1.5 1.5 0 0 1-1.5-1.5V8.25a1.5 1.5 0 0 1 1.5-1.5h5.25a.75.75 0 0 0 0-1.5H5.25Z" />
+                                        </svg>
+                                        Editar Pgto
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    @endforeach
+                    <tfoot class="h-12">
                         <tr>
-                            <td colspan="9"
-                                class="bg-gray-100 text-end uppercase font-semibold tracking-widest px-2">Valor Total:
+                            <td colspan="7"
+                                class="bg-gradient-to-b from-gray-50 to-gray-200 text-end uppercase font-semibold tracking-widest px-2">
+                                Valor Total:
                             </td>
-                            <td class="flex items-center justify-between px-3 py-6 font-medium border">
+                            <td class="flex items-center justify-between h-full px-3 font-medium border">
                                 <div>(R$)</div>
-                                <div>{{ number_format($valorTotal, 2, ',', '.') }}</div>
+                                <div>{{ number_format($valorTotalContrato, 2, ',', '.') }}</div>
                             </td>
-                            <td colspan="1" class="bg-gray-100"></td>
+                            <td colspan="1" class="bg-gradient-to-b from-gray-50 to-gray-200"></td>
                         </tr>
                     </tfoot>
                 </table>
             </div>
         </div>
-    @endif
+    @endforeach
 
     <div x-show="inserirContrato" x-cloak>
         <div class="fixed z-50 inset-0 overflow-x-hidden overflow-y-hidden">
@@ -259,49 +229,3 @@
     </div>
 
 </div>
-
-<script>
-    function handleContractAction(eventType, title, icon, confirmText, cancelText, htmlContent, actionMethod) {
-        window.addEventListener(eventType, function(e) {
-            var contractNumber = e.detail; // Obtém o valor do evento
-            Swal.fire({
-                title: title,
-                icon: icon,
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: confirmText,
-                cancelButtonText: cancelText,
-                reverseButtons: true,
-                html: htmlContent.replace('{contractNumber}',
-                    contractNumber), // Substitui o valor no conteúdo HTML
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    @this.call(actionMethod);
-                }
-            });
-        });
-    }
-
-    // Configurações específicas para cada evento
-
-    handleContractAction(
-        'existingContract',
-        'Tem certeza disso?',
-        'question',
-        'Sim, atualizar',
-        'Não, cancelar',
-        'Os dados referentes ao <strong>Contrato nº {contractNumber}</strong> serão substituídos.',
-        'contractUpdate'
-    );
-
-    handleContractAction(
-        'deleteContractMsg',
-        'Tem certeza disso?',
-        'warning',
-        'Sim, excluir',
-        'Não, cancelar',
-        'Os dados referentes ao <strong>Contrato nº {contractNumber}</strong> serão excluídos permanentemente.',
-        'contractDelete'
-    );
-</script>
