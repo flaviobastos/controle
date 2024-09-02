@@ -18,6 +18,48 @@ class EditarPagamento extends Component
     public $data_pagamento;
     public $data_manutencao;
 
+    protected $rules = [
+        'responsavel' => 'required',
+        'vencimento' => 'required',
+        'parcela' => 'required',
+        'nota_fiscal' => 'required',
+        'valor' => 'required',
+        'data_pagamento' => 'nullable|date',
+        'data_manutencao' => 'nullable|date',
+    ];
+
+    public function paymentEdit() // Atualiza o pagamento
+    {
+        try {
+            // Valida os dados
+            $validated = $this->validate();
+
+            // Remove os separadores de milhar (pontos) e converte a vírgula decimal para ponto
+            $this->valor = str_replace('.', '', $this->valor); // Remove os pontos
+            $this->valor = str_replace(',', '.', $this->valor); // Converte a vírgula decimal para ponto
+            $validated['valor'] = $this->valor;
+
+            Pagamento::find($this->id_editarPagamento)->update([
+                'responsavel' => $validated['responsavel'],
+                'vencimento' => $this->vencimento,
+                'parcela' => $this->parcela, // Índice baseado em 1 para a parcela
+                'nota_fiscal' => $this->nota_fiscal,
+                'valor' => $this->valor,
+                'data_pagamento' => $this->data_pagamento,
+                'data_manutencao' => $this->data_manutencao,
+            ]);
+
+            // Notifica o usuário sobre o sucesso da operação
+            $this->dispatchNotification('success');
+
+            // Limpa os campos do formulário
+            $this->closeWindow();
+        } catch (\Throwable $e) {
+            // Notifica o usuário sobre o erro na operação
+            $this->dispatchNotification('error', $e->getMessage());
+        }
+    }
+
     #[On('editPaymentById')] // Pega o $id_editarPagamento enviado por dashboard
     public function editPaymentById($id_editarPagamento)
     {
@@ -33,6 +75,11 @@ class EditarPagamento extends Component
     public function delete() // Chama a função para confirmar o delete
     {
         $this->dispatch('deletePaymentMsg',  $this->valor);
+    }
+
+    public function update() // Chama a função para confirmar o delete
+    {
+        $this->dispatch('editPaymentMsg');
     }
 
     public function paymentDelete() // Deleta o contrato
@@ -63,12 +110,6 @@ class EditarPagamento extends Component
 
         if ($pagamento) {
             $this->fill($pagamento->toArray());
-
-            // Formata as datas que foram carregadas, se não forem null
-            $this->vencimento = $this->vencimento ? date('d/m/Y', strtotime($this->vencimento)) : '';
-            $this->data_pagamento = $this->data_pagamento ? date('d/m/Y', strtotime($this->data_pagamento)) : '';
-            $this->data_manutencao = $this->data_manutencao ? date('d/m/Y', strtotime($this->data_manutencao)) : '';
-
             // Formata o valor que foi carregado
             $this->valor = number_format($this->valor, 2, ',', '.');
         }

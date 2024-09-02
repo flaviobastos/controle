@@ -54,30 +54,29 @@
                     <div class="col-span-1">
                         <label for="parcelas" class="block mb-2 text-sm font-medium text-gray-900">Qtd.
                             Parcela(s)</label>
-                        <input type="number" name="parcelas" id="parcelas" wire:model.live="parcelas"
+                        <input type="number" name="parcelas" id="parcelas" wire:model.live.debounce.1000ms="parcela"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
                             placeholder="" min="1" max="12" required="">
                     </div>
 
-                    @foreach ($valores as $index => $valor)
+                    @foreach ($valor as $index => $valorItem)
                         <div class="col-span-1">
-                            <label for="nota_fiscal_{{ $index }}"
+                            <label for="nota_fiscal.{{ $index }}"
                                 class="block mb-2 text-sm font-medium text-gray-900">
                                 Nota Fiscal ({{ $index + 1 }}ª Parcela)
                             </label>
-                            <input type="text" name="nota_fiscal_{{ $index }}"
-                                id="nota_fiscal_{{ $index }}"
-                                wire:model.defer="notas_fiscais.{{ $index }}"
+                            <input type="text" name="nota_fiscal.{{ $index }}"
+                                id="nota_fiscal.{{ $index }}" wire:model.defer="nota_fiscal.{{ $index }}"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
                                 placeholder="00000" required="" maxlength="5" x-mask="99999">
                         </div>
 
                         <div class="col-span-1">
-                            <label for="valor_{{ $index }}" class="block mb-2 text-sm font-medium text-gray-900">
+                            <label for="valor.{{ $index }}" class="block mb-2 text-sm font-medium text-gray-900">
                                 Valor ({{ $index + 1 }}ª Parcela)
                             </label>
-                            <input type="text" name="valor_{{ $index }}" id="valor_{{ $index }}"
-                                wire:model.defer="valores.{{ $index }}"
+                            <input type="text" name="valor.{{ $index }}" id="valor.{{ $index }}"
+                                wire:model.defer="valor.{{ $index }}"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
                                 placeholder="R$ 0,00" required="" maxlength="14"
                                 x-mask:dynamic="$money($input, ',')">

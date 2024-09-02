@@ -32,16 +32,16 @@
 
                 <div class="col-span-1">
                     <label for="vencimento" class="block mb-2 text-sm font-medium text-gray-900">Vencimento</label>
-                    <input name="vencimento" id="vencimento" wire:model.defer="vencimento"
+                    <input type="date" name="vencimento" id="vencimento" wire:model.defer="vencimento"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                        placeholder="{{ date('d/m/Y') }}" required="" x-mask="99/99/9999">
+                        required="">
                 </div>
 
                 <div class="col-span-1">
                     <label for="parcela" class="block mb-2 text-sm font-medium text-gray-900">Parcela</label>
                     <input type="text" name="parcela" id="parcela" wire:model.defer="parcela"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                        placeholder="00/00" required="" maxlength="5" x-mask="99/99">
+                        placeholder="00" required="" maxlength="5" x-mask="99">
                 </div>
 
                 <div class="col-span-1">
@@ -62,17 +62,17 @@
                 <div class="col-span-1">
                     <label for="data_pagamento" class="block mb-2 text-sm font-medium text-gray-900">Data
                         Pagamento</label>
-                    <input name="data_pagamento" id="data_pagamento" wire:model.defer="data_pagamento"
+                    <input type="date" name="data_pagamento" id="data_pagamento" wire:model.defer="data_pagamento"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                        placeholder="{{ date('d/m/Y') }}" required="" x-mask="99/99/9999">
+                        required="">
                 </div>
 
                 <div class="col-span-1">
                     <label for="data_manutencao" class="block mb-2 text-sm font-medium text-gray-900">Data
                         Manutenção</label>
-                    <input name="data_manutencao" id="data_manutencao" wire:model.defer="data_manutencao"
+                    <input type="date" name="data_manutencao" id="data_manutencao" wire:model.defer="data_manutencao"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                        placeholder="{{ date('d/m/Y') }}" required="" x-mask="99/99/9999">
+                        required="">
                 </div>
 
             </div>
@@ -90,7 +90,7 @@
                     Excluir
                 </button>
 
-                <button type="button" wire:click="save"
+                <button type="button" wire:click="update"
                     class="text-white inline-flex items-center bg-blue-500 hover:bg-blue-800 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#ffffff"
                         viewBox="0 0 256 256" class="mr-2">
@@ -148,7 +148,7 @@
         'question',
         'Sim, atualizar',
         'Não, cancelar',
-        'Os dados referentes a <strong>N.F nº {contractNumber}</strong> serão substituídos.',
+        'Os dados existentes serão serão substituídos permanentemente.',
         'paymentEdit'
     );
 </script>
