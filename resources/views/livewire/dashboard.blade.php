@@ -104,20 +104,25 @@
                 $dataMaisRecente = $contrato->pagamentos->max('data_manutencao');
                 $pagamentoMaisRecente = $contrato->pagamentos->max('data_pagamento');
                 $qtdParcelas = $contrato->pagamentos->count('parcela');
+                $qtdPagamentosEmAberto = $contrato->pagamentos
+                    ->filter(function ($pagamento) {
+                        return is_null($pagamento->data_pagamento);
+                    })
+                    ->count();
             @endphp
-            <div class="my-7 px-5">
+            <div class="my-7 px-5 relative">
                 <div
                     class="flex flex-col items-start justify-center p-5 h-20 uppercase text-sm font-medium tracking-wider bg-gray-50 border border-b-0 border-gray-400">
                     <p>Fornecedor: {{ $contrato->fornecedor }} - {{ $contrato->cnpj }}</p>
                     <p>Objeto do Contrato: {{ $contrato->objeto }}</p>
                 </div>
-                <div class="shadow-xl border border-gray-400 overflow-x-auto text-nowrap">
+                <div class="shadow-lg border border-gray-400 overflow-x-auto text-nowrap">
                     <table
-                        class="w-full h-full text-sm font-light text-left text-gray-600 border-separate border-spacing-1">
+                        class="w-full h-full text-sm font-light text-left text-gray-600 border-separate border-spacing-0.5">
                         <thead
                             class="text-xs tracking-wider text-gray-700 uppercase bg-gradient-to-b from-gray-50 to-gray-200 border-1 text-center h-14">
                             <tr>
-                                <th scope="col" class="w-32 px-2 border border-gray-400">
+                                <th scope="col" class="w-36 px-6 border border-gray-400">
                                     Vencimento
                                 </th>
                                 <th scope="col" class="w-32 px-2 border border-gray-400">
@@ -223,24 +228,34 @@
                         <tfoot class="h-14 border">
                             <tr>
                                 <td
-                                    class="bg-gradient-to-b from-gray-50 to-gray-200 text-center uppercase font-semibold tracking-widest px-2 border border-gray-400">
-                                    02 em Aberto
+                                    class="bg-gradient-to-b from-gray-50 to-gray-200 border border-gray-400 text-center font-semibold">
+                                    Qtd. em aberto: {{ $qtdPagamentosEmAberto }}
                                 </td>
                                 <td colspan="2"
                                     class="bg-gradient-to-b from-gray-50 to-gray-200 border border-gray-400 text-center font-semibold">
-                                    Informações Contratuais
+                                    Informações Contratuais e Complementares
                                 </td>
                                 <td colspan="2"
                                     class="bg-gradient-to-b from-gray-50 to-gray-200 border border-gray-400 text-center font-semibold">
-                                    (0{{ $qtdParcelas }}) Parcelas / N.F
+                                    Qtd. de Parcelas: {{ $qtdParcelas }}
                                 </td>
                                 <td colspan="1"
                                     class="bg-gradient-to-b from-gray-50 to-gray-200 border border-gray-400 text-center font-semibold">
-                                    {{ date('d/m/Y', strtotime($pagamentoMaisRecente)) }}
+                                    @if ($pagamentoMaisRecente)
+                                        {{ date('d/m/Y', strtotime($pagamentoMaisRecente)) }}
+                                    @else
+                                        Sem Registro
+                                    @endif
                                 </td>
                                 <td colspan="1"
                                     class="bg-gradient-to-b from-gray-50 to-gray-200 border border-gray-400 text-center font-semibold">
-                                    {{ date('d/m/Y', strtotime($dataMaisRecente)) }}
+                                    <div class="flex flex-row items-center justify-center">
+                                        @if ($dataMaisRecente)
+                                            {{ date('d/m/Y', strtotime($dataMaisRecente)) }}
+                                        @else
+                                            Sem Registro
+                                        @endif
+                                    </div>
                                 </td>
                                 <td colspan="1"
                                     class="bg-gradient-to-b from-gray-50 to-gray-200 flex items-center justify-between h-full px-3 font-medium border border-gray-400">
@@ -248,16 +263,36 @@
                                     <div>{{ number_format($valorTotalContrato, 2, ',', '.') }}</div>
                                 </td>
                                 <td class="bg-gray-100 border border-gray-400">
-                                    <button wire:click=""
-                                        class="w-full h-full px-2 py-2 text-sm inline-flex items-center justify-center text-center hover:bg-gray-300 duration-500 uppercase">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                            fill="#000000" viewBox="0 0 256 256" class="mr-2">
-                                            <path
-                                                d="M32,64a8,8,0,0,1,8-8H216a8,8,0,0,1,0,16H40A8,8,0,0,1,32,64Zm8,72h72a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16Zm88,48H40a8,8,0,0,0,0,16h88a8,8,0,0,0,0-16Zm109.66,13.66a8,8,0,0,1-11.32,0L206,177.36A40,40,0,1,1,217.36,166l20.3,20.3A8,8,0,0,1,237.66,197.66ZM184,168a24,24,0,1,0-24-24A24,24,0,0,0,184,168Z">
-                                            </path>
-                                        </svg>
-                                        Filtro Pgto
-                                    </button>
+                                    <div x-data="{ open: false }"
+                                        class="flex flex-row items-center justify-center h-full">
+                                        <button @click="open = !open"
+                                            class="w-full h-full px-2 py-2 text-sm inline-flex items-center justify-center text-center hover:bg-gray-300 duration-500 uppercase">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                                fill="#000000" viewBox="0 0 256 256" class="mr-2">
+                                                <path
+                                                    d="M32,64a8,8,0,0,1,8-8H216a8,8,0,0,1,0,16H40A8,8,0,0,1,32,64Zm8,72h72a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16Zm88,48H40a8,8,0,0,0,0,16h88a8,8,0,0,0,0-16Zm109.66,13.66a8,8,0,0,1-11.32,0L206,177.36A40,40,0,1,1,217.36,166l20.3,20.3A8,8,0,0,1,237.66,197.66ZM184,168a24,24,0,1,0-24-24A24,24,0,0,0,184,168Z">
+                                                </path>
+                                            </svg>
+                                            Filtro Pgto
+                                        </button>
+                                        <!-- Div do botão Filtro Pgto -->
+                                        <div x-show="open" @click.outside="open = false"
+                                            class="absolute z-50  mt-32 -ml-20 w-44 p-4 bg-white border border-gray-300 rounded shadow-lg">
+                                            <p class="uppercase mb-4 ">Filtrar Pagamentos:</p>
+                                            <form>
+                                                <label class="flex items-center mb-2">
+                                                    <input type="checkbox" value="pagos"
+                                                        class="form-checkbox h-5 w-5 text-blue-600">
+                                                    <span class="ml-2 text-gray-700">Pagos</span>
+                                                </label>
+                                                <label class="flex items-center mb-2">
+                                                    <input type="checkbox" value="abertos"
+                                                        class="form-checkbox h-5 w-5 text-blue-600">
+                                                    <span class="ml-2 text-gray-700">Em aberto</span>
+                                                </label>
+                                            </form>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                         </tfoot>
