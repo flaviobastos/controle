@@ -28,6 +28,13 @@ class EditarPagamento extends Component
         'data_manutencao' => 'nullable|date',
     ];
 
+    #[On('editPaymentById')] // Pega o $id_editarPagamento enviado por dashboard
+    public function editPaymentById($id_editarPagamento)
+    {
+        $this->id_editarPagamento = $id_editarPagamento;
+        $this->loadPayment();
+    }
+
     public function paymentEdit() // Atualiza o pagamento
     {
         try {
@@ -39,14 +46,18 @@ class EditarPagamento extends Component
             $this->valor = str_replace(',', '.', $this->valor); // Converte a vírgula decimal para ponto
             $validated['valor'] = $this->valor;
 
+            // Verifica se os campos estão vazios e define como null
+            $validated['data_pagamento'] = empty($this->data_pagamento) ? null : $this->data_pagamento;
+            $validated['data_manutencao'] = empty($this->data_manutencao) ? null : $this->data_manutencao;
+
             Pagamento::find($this->id_editarPagamento)->update([
                 'responsavel' => $validated['responsavel'],
                 'vencimento' => $this->vencimento,
                 'parcela' => $this->parcela, // Índice baseado em 1 para a parcela
                 'nota_fiscal' => $this->nota_fiscal,
                 'valor' => $this->valor,
-                'data_pagamento' => $this->data_pagamento,
-                'data_manutencao' => $this->data_manutencao,
+                'data_pagamento' => $validated['data_pagamento'],
+                'data_manutencao' => $validated['data_manutencao'],
             ]);
 
             // Notifica o usuário sobre o sucesso da operação
@@ -58,13 +69,6 @@ class EditarPagamento extends Component
             // Notifica o usuário sobre o erro na operação
             $this->dispatchNotification('error', $e->getMessage());
         }
-    }
-
-    #[On('editPaymentById')] // Pega o $id_editarPagamento enviado por dashboard
-    public function editPaymentById($id_editarPagamento)
-    {
-        $this->id_editarPagamento = $id_editarPagamento;
-        $this->loadPayment();
     }
 
     public function dispatchNotification($type) // Emite as mensagens de notificação
