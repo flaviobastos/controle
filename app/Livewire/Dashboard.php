@@ -14,9 +14,14 @@ class Dashboard extends Component
     public $listaContratos;
     public $listaPagamentos;
     public $seletorContratos;
-    public $valorTotal;
     public $buscar;
     public $id_contrato;
+    public $ano;
+    public $mes;
+    public $anosDisponiveis = [];
+    public $mesesDisponiveis = [];
+    public $mostrarPagos = true; // Checkbox "Pagos"
+    public $mostrarEmAberto = true; // Checkbox "Em Aberto"
 
     public function logout()
     {
@@ -29,9 +34,22 @@ class Dashboard extends Component
         $this->reset();
     }
 
-    public function editPayment($id_editarPagamento)  // Envia  $id_editarPagamento para editar-pagamento
+    public function editPayment($id_editarPagamento)  // Envia $id_editarPagamento para editar-pagamento
     {
         $this->dispatch('editPaymentById', $id_editarPagamento);
+    }
+
+    public function selectPeriod()
+    {
+        $this->anosDisponiveis = Pagamento::selectRaw('YEAR(vencimento) as ano')
+            ->distinct()
+            ->orderBy('ano', 'desc')
+            ->pluck('ano');
+
+        $this->mesesDisponiveis = Pagamento::selectRaw('MONTH(vencimento) as mes')
+            ->distinct()
+            ->orderBy('mes', 'asc')
+            ->pluck('mes');
     }
 
     public function listContracts()
@@ -39,8 +57,28 @@ class Dashboard extends Component
         // Inicia a consulta básica
         $query = Contrato::with(['pagamentos' => function ($query) {
             $query->orderBy('vencimento', 'asc')->orderBy('parcela', 'asc');
-        }])
-            ->orderBy('contrato', 'asc');
+
+            // Aplica filtro por ano, se fornecido
+            if (!empty($this->ano)) {
+                $query->whereYear('vencimento', $this->ano);
+            }
+
+            // Aplica filtro por mês, se fornecido
+            if (!empty($this->mes)) {
+                $query->whereMonth('vencimento', $this->mes);
+            }
+
+            // Aplica o filtro de "pagos" e "em aberto"
+            if ($this->mostrarPagos && !$this->mostrarEmAberto) {
+                // Mostrar somente pagamentos que têm data_pagamento
+                $query->whereNotNull('data_pagamento');
+            } elseif (!$this->mostrarPagos && $this->mostrarEmAberto) {
+                // Mostrar somente pagamentos em aberto (data_pagamento é null)
+                $query->whereNull('data_pagamento');
+            }
+            // Caso ambos os checkboxes estejam marcados, mostrar todos os pagamentos (sem filtro)
+            // O comportamento padrão de mostrar todos os pagamentos já acontece se nenhum filtro é aplicado.
+        }]);
 
         // Aplica o filtro se um ID de contrato específico foi selecionado
         if (!empty($this->id_contrato)) {
@@ -49,9 +87,6 @@ class Dashboard extends Component
 
         // Executa a consulta e armazena os resultados
         $this->listaContratos = $query->get();
-
-        // Somando diretamente no banco de dados
-        $this->valorTotal = Pagamento::whereIn('contrato_id', $this->listaContratos->pluck('id'))->sum('valor');
     }
 
     public function selectContracts()
@@ -59,17 +94,17 @@ class Dashboard extends Component
         $this->seletorContratos = Contrato::orderBy('contrato', 'asc')->get(); // Retorna todos os contratos ordenados
     }
 
-    public function listPayments()
+    public function applyFilter()
     {
-        $this->listaPagamentos = Pagamento::all(); // Retorna todos os pagamentos como uma coleção
+        $this->listContracts();
     }
 
     #[On('updateRender')] // Atualiza o render após atualizações
     public function render()
     {
         $this->listContracts();
-        $this->listPayments();
         $this->selectContracts();
+        $this->selectPeriod();
 
         return view('livewire.dashboard');
     }

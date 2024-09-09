@@ -46,9 +46,9 @@
 
                     <div class="col-span-1">
                         <label for="vencimento" class="block mb-2 text-sm font-medium text-gray-900">Vencimento</label>
-                        <input name="vencimento" id="vencimento" wire:model.defer="vencimento"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
-                            placeholder="{{ date('d/m/Y') }}" required="" x-mask="99/99/9999">
+                        <input type="date" name="vencimento" id="vencimento" wire:model.defer="vencimento"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                            required="">
                     </div>
 
                     <div class="col-span-1">
@@ -56,7 +56,7 @@
                             Parcela(s)</label>
                         <input type="number" name="parcelas" id="parcelas" wire:model.live.debounce.1000ms="parcela"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
-                            placeholder="" min="1" max="12" required="">
+                            placeholder="" min="1" max="5" required="">
                     </div>
 
                     @foreach ($valor as $index => $valorItem)

@@ -63,15 +63,14 @@ class InserirPagamento extends Component
             $this->valor = str_replace(',', '.', $this->valor); // Converte a vírgula decimal para ponto
             $validated['valor'] = $this->valor;
 
-            // Converte a data de 'dd/mm/yyyy' para 'yyyy-mm-dd' para ser aceita pelo banco de dados
-            $vencimento = \DateTime::createFromFormat('d/m/Y', $this->vencimento);
+            $vencimento = new \DateTime($this->vencimento);
 
             // Itera sobre as parcelas e salva cada uma como uma linha separada no banco de dados
             foreach ($this->nota_fiscal as $index => $notaFiscal) {
                 // Cria um novo array de dados para cada linha
                 $dados = [
                     'responsavel' => $validated['responsavel'],
-                    'vencimento' => $vencimento->format('Y-m-d'), // Define o vencimento para esta parcela
+                    'vencimento' => $vencimento, // Define o vencimento para esta parcela
                     'parcela' => $index + 1, // Índice baseado em 1 para a parcela
                     'nota_fiscal' => $notaFiscal,
                     'valor' => $this->valor[$index],
