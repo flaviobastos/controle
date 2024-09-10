@@ -57,7 +57,7 @@
                             Contrato</label>
                         <input type="text" name="contrato" id="contrato" wire:model.defer="contrato"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                            placeholder="000000/0000" required="" maxlength="11" x-mask="999999/9999">
+                            placeholder="00000000000" required="" maxlength="11" x-mask="99999999999">
                     </div>
 
                     <div class="col-span-2 sm:col-span-1">

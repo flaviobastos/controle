@@ -22,6 +22,12 @@
 
         <div class="flex flex-row items-center justify-center">
 
+            <div class="flex flex-row items-center justify-start text-sm text-white px-2">
+                @php
+                    echo date('d/m/Y H:i:s', strtotime(now()));
+                @endphp
+            </div>
+
             {{-- Botão Inserir Contratos --}}
 
             <button x-on:click="inserirContrato = true"
@@ -71,7 +77,7 @@
 
             {{-- Campo de Busca --}}
 
-            <div class="bg-gray-50 border border-gray-400 rounded-3xl shadow-md text-nowrap">
+            {{--             <div class="bg-gray-50 border border-gray-400 rounded-3xl shadow-md text-nowrap">
                 <div class="flex flex-row items-center justify-center py-1">
 
                     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#000000"
@@ -98,7 +104,7 @@
                     </button>
 
                 </div>
-            </div>
+            </div> --}}
 
         </div>
 
@@ -106,7 +112,7 @@
 
     <section>
 
-        <div class="my-7 px-5 relative">
+        <div class="px-5 relative my-5">
             <div class="shadow-lg overflow-x-auto text-nowrap">
                 <table class="w-full h-full text-sm font-light text-left text-gray-600">
                     <thead
@@ -159,7 +165,7 @@
                                     <!-- Painel do Filtro do Dashboard -->
 
                                     <div x-show="open" @click.outside="open = false"
-                                        class="absolute z-50  mt-56 -ml-20 w-52 p-4 bg-white border border-gray-300 rounded shadow-lg font-light">
+                                        class="absolute z-50  mt-56 -ml-20 w-52 p-4 bg-white border border-gray-300 rounded shadow-lg shadow-gray-500 font-light">
                                         <p class="uppercase mb-4 ">Filtrar Pagamentos:</p>
 
                                         <form class="flex flex-col items-start justify-start ">
@@ -273,14 +279,16 @@
                                     <td class="text-center border">
                                         {{ $pagamento->nota_fiscal }}
                                     </td>
-                                    <td class="px-2 text-center border">
-                                        <div class="flex flex-row items-center justify-center">
-                                            @if ($pagamento->data_pagamento)
-                                                <strong>{{ date('d/m/Y', strtotime($pagamento->data_pagamento)) }}</strong>
-                                            @else
-                                                Sem Registro
-                                            @endif
-                                        </div>
+                                    <td>
+                                        @if ($pagamento->data_pagamento)
+                                            <div class="flex flex-row items-center justify-center w-full h-full">
+                                                {{ date('d/m/Y', strtotime($pagamento->data_pagamento)) }}
+                                            </div>
+                                        @else
+                                            <div
+                                                class="flex flex-row items-center justify-center w-full h-full {{ strtotime($pagamento->vencimento) <= strtotime(now()) ? 'bg-red-200' : '' }}">
+                                                Em Aberto</div>
+                                        @endif
                                     </td>
                                     <td class="px-2 text-center border">
                                         <div class="flex flex-row items-center justify-center">
