@@ -20,8 +20,7 @@ class Dashboard extends Component
     public $mes;
     public $anosDisponiveis = [];
     public $mesesDisponiveis = [];
-    public $mostrarPagos = true; // Checkbox "Pagos"
-    public $mostrarEmAberto = true; // Checkbox "Em Aberto"
+    public $filtro = 'todos'; // Radio "Todos" selecionado por padrão
 
     public function logout()
     {
@@ -74,13 +73,25 @@ class Dashboard extends Component
             $query->whereMonth('vencimento', $this->mes);
         }
 
-        // Aplica o filtro de "pagos" e "em aberto"
-        if ($this->mostrarPagos && !$this->mostrarEmAberto) {
-            // Mostrar somente pagamentos que têm data_pagamento
-            $query->whereNotNull('data_pagamento');
-        } elseif (!$this->mostrarPagos && $this->mostrarEmAberto) {
-            // Mostrar somente pagamentos em aberto (data_pagamento é null)
-            $query->whereNull('data_pagamento');
+        // Aplica o filtro baseado no valor do radio selecionado
+        switch ($this->filtro) {
+            case 'pagos':
+                // Mostrar somente pagamentos que têm data_pagamento
+                $query->whereNotNull('data_pagamento');
+                break;
+            case 'abertos':
+                // Mostrar somente pagamentos em aberto (data_pagamento é null)
+                $query->whereNull('data_pagamento');
+                break;
+            case 'vencimentos':
+                // Mostrar pagamentos em vencimento (vencimento <= data atual e data_pagamento é null)
+                $query->where('vencimento', '<=', now())
+                    ->whereNull('data_pagamento');
+                break;
+            case 'todos':
+            default:
+                // Não aplica nenhum filtro adicional, mostra todos os pagamentos
+                break;
         }
 
         // Aplica o filtro se um ID de contrato específico foi selecionado

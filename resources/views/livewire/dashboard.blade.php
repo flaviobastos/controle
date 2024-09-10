@@ -112,7 +112,7 @@
 
     <section>
 
-        <div class="px-5 relative my-5">
+        <div class="px-5 my-5">
             <div class="shadow-lg overflow-x-auto text-nowrap">
                 <table class="w-full h-full text-sm font-light text-left text-gray-600">
                     <thead
@@ -152,7 +152,7 @@
                                 class="w-32 bg-gradient-to-b from-gray-50 to-gray-200 border border-gray-400">
                                 <div x-data="{ open: false }" class="flex flex-row items-center justify-center h-full">
                                     <button @click="open = !open"
-                                        class="{{ !empty($mes) || !empty($ano) || !$mostrarPagos || !$mostrarEmAberto ? 'bg-gray-100 border-2 border-gray-700 text-black' : 'bg-gray-100 text-black' }} w-full h-full px-2 py-2 text-sm inline-flex items-center justify-center text-center hover:bg-gray-300 duration-500 uppercase">
+                                        class="{{ !empty($mes) || !empty($ano) || $filtro !== 'todos' ? 'border-2 border-dashed border-slate-800 animate-pulse' : '' }} w-full h-full px-2 py-2 text-sm inline-flex items-center justify-center text-center hover:bg-gray-300 duration-500 uppercase">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
                                             fill="#000000" viewBox="0 0 256 256" class="mr-2">
                                             <path
@@ -165,27 +165,16 @@
                                     <!-- Painel do Filtro do Dashboard -->
 
                                     <div x-show="open" @click.outside="open = false"
-                                        class="absolute z-50  mt-56 -ml-20 w-52 p-4 bg-white border border-gray-300 rounded shadow-lg shadow-gray-500 font-light">
-                                        <p class="uppercase mb-4 ">Filtrar Pagamentos:</p>
+                                        class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 w-60 p-4 bg-white border border-gray-300 rounded shadow-lg shadow-gray-500 font-light">
+                                        <p class="uppercase mb-4 text-base">Filtrar Pagamentos:</p>
 
                                         <form class="flex flex-col items-start justify-start ">
 
-                                            <label class="flex items-center mb-2">
-                                                <input wire:model="mostrarPagos" type="checkbox" value="pagos"
-                                                    class="form-checkbox h-5 w-5 text-blue-600" checked>
-                                                <span class="ml-2 text-gray-700">Pagos</span>
-                                            </label>
-                                            <label class="flex items-center mb-2">
-                                                <input wire:model="mostrarEmAberto" type="checkbox" value="abertos"
-                                                    class="form-checkbox h-5 w-5 text-blue-600" checked>
-                                                <span class="ml-2 text-gray-700">Em aberto</span>
-                                            </label>
-
                                             <div
-                                                class="flex flex-row w-full justify-between py-2 my-2 border gap-1 text-sm">
+                                                class="flex flex-row w-full justify-between py-2 mb-4 gap-1 text-sm border border-gray-400">
 
                                                 <!-- Seletor de Mês -->
-                                                <select wire:model="mes" class="focus:outline-none">
+                                                <select wire:model="mes" class="focus:outline-none px-2">
                                                     <option value="">Mês</option>
                                                     @php
                                                         // Mapeamento dos números dos meses para os nomes em português
@@ -212,7 +201,7 @@
                                                 </select>
 
                                                 <!-- Seletor de Ano -->
-                                                <select wire:model="ano" class="focus:outline-none px-1">
+                                                <select wire:model="ano" class="focus:outline-none px-2">
                                                     <option value="">Ano</option>
                                                     @foreach ($anosDisponiveis as $ano)
                                                         <option value="{{ $ano }}">{{ $ano }}
@@ -222,13 +211,36 @@
 
                                             </div>
 
+                                            <div>
+                                                <label class="flex items-center mb-2">
+                                                    <input wire:model="filtro" type="radio" value="todos"
+                                                        class="h-5 w-5 text-blue-600">
+                                                    <span class="ml-2 text-gray-700">Todos</span>
+                                                </label>
+                                                <label class="flex items-center mb-2">
+                                                    <input wire:model="filtro" type="radio" value="pagos"
+                                                        class="h-5 w-5 text-blue-600">
+                                                    <span class="ml-2 text-gray-700">Pagos</span>
+                                                </label>
+                                                <label class="flex items-center mb-2">
+                                                    <input wire:model="filtro" type="radio" value="abertos"
+                                                        class="h-5 w-5 text-blue-600">
+                                                    <span class="ml-2 text-gray-700">Em aberto</span>
+                                                </label>
+                                                <label class="flex items-center mb-2">
+                                                    <input wire:model="filtro" type="radio" value="vencimentos"
+                                                        class="h-5 w-5 text-blue-600">
+                                                    <span class="ml-2 text-gray-700">Em Vencimento</span>
+                                                </label>
+                                            </div>
+
                                         </form>
 
                                         <div class="flex flex-row w-full justify-between">
                                             <button wire:click="clear"
-                                                class="border p-2 my-2 hover:bg-gray-200">Limpar</button>
+                                                class="border border-gray-400 py-2 px-4 my-2 hover:bg-gray-200">Limpar</button>
                                             <button wire:click="applyFilter"
-                                                class="border p-2 my-2 hover:bg-gray-200">Filtrar</button>
+                                                class="border border-gray-400 py-2 px-4 my-2 hover:bg-gray-200">Filtrar</button>
                                         </div>
 
                                     </div>
@@ -241,7 +253,7 @@
                             <tbody>
                                 <tr class="bg-white border">
                                     <th scope="row"
-                                        class="font-medium bg-gray-100 text-gray-900 text-center border">
+                                        class="font-normal bg-gray-100 text-gray-900 text-center border">
                                         <div class="flex flex-row items-center justify-center">
                                             {{ date('d/m/Y', strtotime($pagamento->vencimento)) }}
                                             @if ($pagamento->data_pagamento)
@@ -251,9 +263,16 @@
                                                         d="M173.66,98.34a8,8,0,0,1,0,11.32l-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35A8,8,0,0,1,173.66,98.34ZM232,128A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z">
                                                     </path>
                                                 </svg>
-                                            @else
+                                            @elseif (strtotime($pagamento->vencimento) <= strtotime(now()))
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
                                                     fill="#ee2020" viewBox="0 0 256 256" class="ml-2">
+                                                    <path
+                                                        d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm-8-80V80a8,8,0,0,1,16,0v56a8,8,0,0,1-16,0Zm20,36a12,12,0,1,1-12-12A12,12,0,0,1,140,172Z">
+                                                    </path>
+                                                </svg>
+                                            @else
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                                    fill="#000000" viewBox="0 0 256 256" class="ml-2">
                                                     <path
                                                         d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm-8-80V80a8,8,0,0,1,16,0v56a8,8,0,0,1-16,0Zm20,36a12,12,0,1,1-12-12A12,12,0,0,1,140,172Z">
                                                     </path>
@@ -281,13 +300,21 @@
                                     </td>
                                     <td>
                                         @if ($pagamento->data_pagamento)
-                                            <div class="flex flex-row items-center justify-center w-full h-full">
+                                            <div
+                                                class="bg-green-200 flex flex-row items-center justify-center w-full h-full">
                                                 {{ date('d/m/Y', strtotime($pagamento->data_pagamento)) }}
                                             </div>
                                         @else
+                                            @php
+                                                $status =
+                                                    strtotime($pagamento->vencimento) <= strtotime(now())
+                                                        ? 'Em Vencimento'
+                                                        : 'Em Aberto';
+                                            @endphp
                                             <div
                                                 class="flex flex-row items-center justify-center w-full h-full {{ strtotime($pagamento->vencimento) <= strtotime(now()) ? 'bg-red-200' : '' }}">
-                                                Em Aberto</div>
+                                                {{ $status }}
+                                            </div>
                                         @endif
                                     </td>
                                     <td class="px-2 text-center border">
