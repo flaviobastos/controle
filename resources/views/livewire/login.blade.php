@@ -4,16 +4,16 @@
         alt="Loading">
     <section class="bg-gray-200">
         <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-            <a href="#" class="flex items-center mb-6 text-xl font-light text-gray-900">
-                Controle de Locação de Equipamentos
+            <a href="#" class="flex items-center mb-6 text-3xl font-light text-gray-900">
+                Controle de Pagamentos
             </a>
-            <div class="w-full bg-white rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0">
-                <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
-                    <h1 class="text-xl text-center font-light leading-tight tracking-tight text-gray-900 md:text-2xl">
+            <div class="w-full bg-white rounded-lg shadow max-w-sm">
+                <div class="p-6 space-y-4">
+                    <h1 class="text-xl text-center font-light leading-tight tracking-tight text-gray-900">
                         Acesse com sua conta
                     </h1>
                     <hr>
-                    <form class="space-y-4 md:space-y-6" action="#">
+                    <form class="space-y-4" action="#">
                         <div>
                             <label for="email" class="block mb-2 text-sm font-medium text-gray-900">Seu email</label>
                             <input type="email" name="email" id="email" wire:model.defer="email"

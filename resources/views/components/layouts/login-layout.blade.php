@@ -1,12 +1,14 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="PT-BR">
 
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $title ?? 'Page Title' }}</title>
-    @vite('resources/css/app.css')
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Controle de Pagamentos</title>
+    <link rel="icon" href="{{ asset('icons/schedule.png') }}">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    @vite('resources/css/app.css')
 </head>
 
 <body>

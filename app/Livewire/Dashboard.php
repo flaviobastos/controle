@@ -16,7 +16,7 @@ class Dashboard extends Component
     public $seletorContratos;
     public $buscar;
     public $id_contrato;
-    public $ano;
+    public $ano = null;
     public $mes;
     public $anosDisponiveis = [];
     public $mesesDisponiveis = [];
@@ -27,6 +27,11 @@ class Dashboard extends Component
     {
         Auth::logout();
         return redirect()->route('login');
+    }
+
+    public function mount()
+    {
+        $this->ano = date('Y'); // Define o ano atual
     }
 
     public function clear() // Limpar o campo de pesquisa
@@ -54,39 +59,37 @@ class Dashboard extends Component
 
     public function listContracts()
     {
-        // Inicia a consulta básica
-        $query = Contrato::with(['pagamentos' => function ($query) {
-            $query->orderBy('vencimento', 'asc')->orderBy('parcela', 'asc');
+        // Inicia a consulta diretamente no modelo de Pagamento
+        $query = Pagamento::with('contrato') // Inclui o relacionamento do contrato
+            ->orderBy('vencimento', 'asc')   // Ordena por vencimento
+            ->orderBy('parcela', 'asc');     // Ordena por parcela
 
-            // Aplica filtro por ano, se fornecido
-            if (!empty($this->ano)) {
-                $query->whereYear('vencimento', $this->ano);
-            }
+        // Aplica filtro por ano, se fornecido
+        if (!empty($this->ano)) {
+            $query->whereYear('vencimento', $this->ano);
+        }
 
-            // Aplica filtro por mês, se fornecido
-            if (!empty($this->mes)) {
-                $query->whereMonth('vencimento', $this->mes);
-            }
+        // Aplica filtro por mês, se fornecido
+        if (!empty($this->mes)) {
+            $query->whereMonth('vencimento', $this->mes);
+        }
 
-            // Aplica o filtro de "pagos" e "em aberto"
-            if ($this->mostrarPagos && !$this->mostrarEmAberto) {
-                // Mostrar somente pagamentos que têm data_pagamento
-                $query->whereNotNull('data_pagamento');
-            } elseif (!$this->mostrarPagos && $this->mostrarEmAberto) {
-                // Mostrar somente pagamentos em aberto (data_pagamento é null)
-                $query->whereNull('data_pagamento');
-            }
-            // Caso ambos os checkboxes estejam marcados, mostrar todos os pagamentos (sem filtro)
-            // O comportamento padrão de mostrar todos os pagamentos já acontece se nenhum filtro é aplicado.
-        }]);
+        // Aplica o filtro de "pagos" e "em aberto"
+        if ($this->mostrarPagos && !$this->mostrarEmAberto) {
+            // Mostrar somente pagamentos que têm data_pagamento
+            $query->whereNotNull('data_pagamento');
+        } elseif (!$this->mostrarPagos && $this->mostrarEmAberto) {
+            // Mostrar somente pagamentos em aberto (data_pagamento é null)
+            $query->whereNull('data_pagamento');
+        }
 
         // Aplica o filtro se um ID de contrato específico foi selecionado
         if (!empty($this->id_contrato)) {
-            $query->where('id', $this->id_contrato);
+            $query->where('contrato_id', $this->id_contrato);
         }
 
         // Executa a consulta e armazena os resultados
-        $this->listaContratos = $query->get();
+        $this->listaPagamentos = $query->get();
     }
 
     public function selectContracts()

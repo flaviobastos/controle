@@ -62,7 +62,7 @@
                     wire:change="listContracts">
                     <option value="" selected>Exibir Todos os Contratos</option>
                     @foreach ($seletorContratos as $contrato)
-                        <option value="{{ $contrato->id }}">
+                        <option value="{{ $contrato->id }}" class="uppercase">
                             {{ $contrato->contrato . ' - ' . substr($contrato->fornecedor, 0, 10) }}...
                         </option>
                     @endforeach
@@ -107,11 +107,10 @@
     <section>
 
         <div class="my-7 px-5 relative">
-            <div class="shadow-lg border border-gray-400 overflow-x-auto text-nowrap">
-                <table
-                    class="w-full h-full text-sm font-light text-left text-gray-600 border-separate border-spacing-0.5">
+            <div class="shadow-lg overflow-x-auto text-nowrap">
+                <table class="w-full h-full text-sm font-light text-left text-gray-600">
                     <thead
-                        class="text-xs tracking-wider text-gray-700 uppercase bg-gradient-to-b from-gray-50 to-gray-200 border-1 text-center h-14">
+                        class="text-xs tracking-wider text-gray-700 uppercase bg-gradient-to-b from-gray-50 to-gray-200 text-center h-14">
                         <tr>
                             <th scope="col" class="w-36 px-6 border border-gray-400">
                                 Vencimento
@@ -143,10 +142,11 @@
                             <th scope="col" class="w-32 px-6 border border-gray-400">
                                 Valor (R$)
                             </th>
-                            <th scope="col" class="w-32 border border-gray-400">
+                            <th scope="col"
+                                class="w-32 bg-gradient-to-b from-gray-50 to-gray-200 border border-gray-400">
                                 <div x-data="{ open: false }" class="flex flex-row items-center justify-center h-full">
                                     <button @click="open = !open"
-                                        class="{{ !empty($mes) || !empty($ano) || !$mostrarPagos || !$mostrarEmAberto ? 'bg-gray-100 border-2 border-red-700 text-black' : 'bg-gray-100 text-black' }} w-full h-full px-2 py-2 text-sm inline-flex items-center justify-center text-center hover:bg-gray-300 duration-500 uppercase">
+                                        class="{{ !empty($mes) || !empty($ano) || !$mostrarPagos || !$mostrarEmAberto ? 'bg-gray-100 border-2 border-gray-700 text-black' : 'bg-gray-100 text-black' }} w-full h-full px-2 py-2 text-sm inline-flex items-center justify-center text-center hover:bg-gray-300 duration-500 uppercase">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
                                             fill="#000000" viewBox="0 0 256 256" class="mr-2">
                                             <path
@@ -155,7 +155,9 @@
                                         </svg>
                                         Filtrar
                                     </button>
-                                    <!-- Div do botão Filtro Pgto -->
+
+                                    <!-- Painel do Filtro do Dashboard -->
+
                                     <div x-show="open" @click.outside="open = false"
                                         class="absolute z-50  mt-56 -ml-20 w-52 p-4 bg-white border border-gray-300 rounded shadow-lg font-light">
                                         <p class="uppercase mb-4 ">Filtrar Pagamentos:</p>
@@ -176,21 +178,38 @@
                                             <div
                                                 class="flex flex-row w-full justify-between py-2 my-2 border gap-1 text-sm">
 
-                                                <!-- Seletor de Ano -->
-                                                <select wire:model="ano" class="focus:outline-none">
-                                                    <option value="">Ano</option>
-                                                    @foreach ($anosDisponiveis as $ano)
-                                                        <option value="{{ $ano }}">{{ $ano }}
+                                                <!-- Seletor de Mês -->
+                                                <select wire:model="mes" class="focus:outline-none">
+                                                    <option value="">Mês</option>
+                                                    @php
+                                                        // Mapeamento dos números dos meses para os nomes em português
+                                                        $nomesMeses = [
+                                                            1 => 'Janeiro',
+                                                            2 => 'Fevereiro',
+                                                            3 => 'Março',
+                                                            4 => 'Abril',
+                                                            5 => 'Maio',
+                                                            6 => 'Junho',
+                                                            7 => 'Julho',
+                                                            8 => 'Agosto',
+                                                            9 => 'Setembro',
+                                                            10 => 'Outubro',
+                                                            11 => 'Novembro',
+                                                            12 => 'Dezembro',
+                                                        ];
+                                                    @endphp
+                                                    @foreach ($mesesDisponiveis as $mes)
+                                                        <option value="{{ $mes }}">
+                                                            {{ $nomesMeses[$mes] ?? 'Mês inválido' }}
                                                         </option>
                                                     @endforeach
                                                 </select>
 
-                                                <!-- Seletor de Mês -->
-                                                <select wire:model="mes" class="focus:outline-none">
-                                                    <option value="">Mês</option>
-                                                    @foreach ($mesesDisponiveis as $mes)
-                                                        <option value="{{ $mes }}">
-                                                            {{ DateTime::createFromFormat('!m', $mes)->format('F') }}
+                                                <!-- Seletor de Ano -->
+                                                <select wire:model="ano" class="focus:outline-none px-1">
+                                                    <option value="">Ano</option>
+                                                    @foreach ($anosDisponiveis as $ano)
+                                                        <option value="{{ $ano }}">{{ $ano }}
                                                         </option>
                                                     @endforeach
                                                 </select>
@@ -200,8 +219,10 @@
                                         </form>
 
                                         <div class="flex flex-row w-full justify-between">
-                                            <button wire:click="clear" class="border p-2 my-2">Limpar</button>
-                                            <button wire:click="applyFilter" class="border p-2 my-2">Filtrar</button>
+                                            <button wire:click="clear"
+                                                class="border p-2 my-2 hover:bg-gray-200">Limpar</button>
+                                            <button wire:click="applyFilter"
+                                                class="border p-2 my-2 hover:bg-gray-200">Filtrar</button>
                                         </div>
 
                                     </div>
@@ -209,8 +230,8 @@
                             </th>
                         </tr>
                     </thead>
-                    @foreach ($this->listaContratos as $contrato)
-                        @foreach ($contrato->pagamentos as $pagamento)
+                    @if ($this->listaPagamentos->isNotEmpty())
+                        @foreach ($this->listaPagamentos as $pagamento)
                             <tbody>
                                 <tr class="bg-white border">
                                     <th scope="row"
@@ -235,13 +256,13 @@
                                         </div>
                                     </th>
                                     <td class="px-2 text-center border">
-                                        {{ $contrato->contrato }}
+                                        {{ $pagamento->contrato->contrato }}
                                     </td>
                                     <td class="px-2 text-center border uppercase">
-                                        {{ $contrato->objeto }}
+                                        {{ $pagamento->contrato->objeto }}
                                     </td>
                                     <td class="px-2 text-center border uppercase">
-                                        {{ $contrato->fornecedor }}
+                                        {{ $pagamento->contrato->fornecedor }}
                                     </td>
                                     <td class="px-2 text-center border uppercase">
                                         {{ $pagamento->responsavel }}
@@ -270,7 +291,7 @@
                                             @endif
                                         </div>
                                     </td>
-                                    <td class="flex flex-row items-center justify-between px-2 h-14 border">
+                                    <td class="flex flex-row items-center justify-between px-2 h-14">
                                         <div>(R$)</div>
                                         <div>{{ number_format($pagamento->valor, 2, ',', '.') }}</div>
                                     </td>
@@ -291,7 +312,9 @@
                                 </tr>
                             </tbody>
                         @endforeach
-                    @endforeach
+                    @else
+                        <p class="text-center mb-5">Nenhum pagamento encontrado.</p>
+                    @endif
                 </table>
             </div>
         </div>
