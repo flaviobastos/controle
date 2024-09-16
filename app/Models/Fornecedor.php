@@ -5,12 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Contrato extends Model
+class Fornecedor extends Model
 {
     use HasFactory;
 
+    // Defina explicitamente o nome correto da tabela
+    protected $table = 'fornecedores';
+
     protected $fillable = [
-        'contrato',
         'fornecedor',
         'objeto',
         'cnpj',

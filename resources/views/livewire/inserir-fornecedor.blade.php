@@ -7,9 +7,9 @@
             <!-- Modal header -->
             <div class="flex items-center justify-between p-4 border-b rounded-t">
                 <p class="text-lg font-semibold text-gray-900">
-                    Cadastrar Contrato
+                    Cadastrar Fornecedor
                 </p>
-                <button type="button" wire:click="closeWindow" x-on:click="inserirContrato=false"
+                <button type="button" wire:click="closeWindow" x-on:click="inserirFornecedor=false"
                     class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center">
                     <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                         viewBox="0 0 14 14">
@@ -24,16 +24,25 @@
                 <div class="grid gap-4 mb-4 grid-cols-2">
 
                     <div class="col-span-2">
-                        <label for="selecionar_contrato" class="block mb-2 text-sm font-medium text-gray-900">Selecionar
-                            Contrato / Fornecedor</label>
-                        <select id="selecionar_contrato" wire:model.live="id_contrato" wire:change="changeContract"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5">
-                            <option value="" selected=""Ï>Cadastrar Novo Contrato</option>
-                            @foreach ($listaContratos as $contrato)
-                                <option value="{{ $contrato->id }}">
-                                    {{ $contrato->contrato . ' - ' . $contrato->fornecedor }}</option>
+                        <label for="selecionar_fornecedor"
+                            class="block mb-2 text-sm font-medium text-gray-900">Selecionar
+                            Fornecedor</label>
+                        <select id="selecionar_fornecedor" wire:model.live="id_fornecedor" wire:change="changeSupplier"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm uppercase rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5">
+                            <option value="" selected="">Cadastrar Fornecedor</option>
+                            @foreach ($listaFornecedores as $fornecedor)
+                                <option value="{{ $fornecedor->id }}">
+                                    {{ $fornecedor->fornecedor }}</option>
                             @endforeach
                         </select>
+                    </div>
+
+                    <div class="col-span-2">
+                        <label for="cnpj" class="block mb-2 text-sm font-medium text-gray-900">CNPJ do
+                            Fornecedor</label>
+                        <input type="text" name="cnpj" id="cnpj" wire:model.defer="cnpj"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm text-center rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                            placeholder="00.000.000/0000-00" required="" maxlength="18" x-mask="99.999.999/9999-99">
                     </div>
 
                     <div class="col-span-2">
@@ -45,27 +54,11 @@
                     </div>
 
                     <div class="col-span-2">
-                        <label for="objeto" class="block mb-2 text-sm font-medium text-gray-900">Objeto do
-                            Contrato</label>
+                        <label for="objeto" class="block mb-2 text-sm font-medium text-gray-900">Descrição do
+                            Fornecedor</label>
                         <textarea id="objeto" rows="4" style="resize:none" wire:model.defer="objeto"
                             class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 uppercase"
-                            placeholder="Escreva o objeto do contrato" required="" maxlength="200"></textarea>
-                    </div>
-
-                    <div class="col-span-2 sm:col-span-1">
-                        <label for="contrato" class="block mb-2 text-sm font-medium text-gray-900">Número do
-                            Contrato</label>
-                        <input type="text" name="contrato" id="contrato" wire:model.defer="contrato"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                            placeholder="00000000000" required="" maxlength="11" x-mask="99999999999">
-                    </div>
-
-                    <div class="col-span-2 sm:col-span-1">
-                        <label for="cnpj" class="block mb-2 text-sm font-medium text-gray-900">CNPJ do
-                            Fornecedor</label>
-                        <input type="text" name="cnpj" id="cnpj" wire:model.defer="cnpj"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                            placeholder="00.000.000/0000-00" required="" maxlength="18" x-mask="99.999.999/9999-99">
+                            placeholder="Escreva informações relacionadas as atividades do fornecedor" required="" maxlength="200"></textarea>
                     </div>
 
                 </div>
@@ -83,7 +76,7 @@
                         Limpar
                     </button>
 
-                    @if (!empty($this->id_contrato))
+                    @if (!empty($this->id_fornecedor))
                         <button type="button" wire:click="delete"
                             class="text-white inline-flex items-center bg-red-600 hover:bg-red-800 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#ffffff"
@@ -115,7 +108,7 @@
     <script>
         function handleContractAction(eventType, title, icon, confirmText, cancelText, htmlContent, actionMethod) {
             window.addEventListener(eventType, function(e) {
-                var contractNumber = e.detail; // Obtém o valor do evento
+                var fornecedor = e.detail; // Obtém o valor do evento
                 Swal.fire({
                     title: title,
                     icon: icon,
@@ -125,8 +118,8 @@
                     confirmButtonText: confirmText,
                     cancelButtonText: cancelText,
                     reverseButtons: true,
-                    html: htmlContent.replace('{contractNumber}',
-                        contractNumber), // Substitui o valor no conteúdo HTML
+                    html: htmlContent.replace('{fornecedor}',
+                        fornecedor), // Substitui o valor no conteúdo HTML
                 }).then((result) => {
                     if (result.isConfirmed) {
                         @this.call(actionMethod);
@@ -138,22 +131,22 @@
         // Configurações específicas para cada evento
 
         handleContractAction(
-            'existingContract',
+            'existingSupplierMsg',
             'Tem certeza disso?',
             'question',
             'Sim, atualizar',
             'Não, cancelar',
-            'Os dados referentes ao <strong>Contrato nº {contractNumber}</strong> serão substituídos.',
-            'contractUpdate'
+            'Os dados referentes ao fornecedor <strong>{fornecedor}</strong> serão substituídos.',
+            'supplierUpdate'
         );
 
         handleContractAction(
-            'deleteContractMsg',
+            'deleteSupplierMsg',
             'Tem certeza disso?',
             'warning',
             'Sim, excluir',
             'Não, cancelar',
-            'Os dados referentes ao <strong>Contrato nº {contractNumber}</strong> serão excluídos permanentemente.',
-            'contractDelete'
+            'Os dados referentes ao fornecedor <strong>{fornecedor}</strong> serão excluídos permanentemente.',
+            'supplierDelete'
         );
     </script>

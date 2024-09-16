@@ -10,7 +10,8 @@ class Pagamento extends Model
     use HasFactory;
 
     protected $fillable = [
-        'contrato_id',
+        'fornecedor_id',
+        'contrato',
         'vencimento',
         'responsavel',
         'parcela',
@@ -18,10 +19,11 @@ class Pagamento extends Model
         'valor',
         'data_pagamento',
         'data_manutencao',
+        'status_manutencao',
     ];
 
-    public function contrato()
+    public function fornecedor()
     {
-        return $this->belongsTo(Contrato::class);
+        return $this->belongsTo(Fornecedor::class);
     }
 }

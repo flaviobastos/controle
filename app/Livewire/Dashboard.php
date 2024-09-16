@@ -2,7 +2,7 @@
 
 namespace App\Livewire;
 
-use App\Models\Contrato;
+use App\Models\Fornecedor;
 use App\Models\Pagamento;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\On;
@@ -11,55 +11,70 @@ use Livewire\Component;
 class Dashboard extends Component
 {
 
-    public $listaContratos;
+    public $listaFornecedores;
     public $listaPagamentos;
-    public $seletorContratos;
+    public $seletorFornecedores;
     public $buscar;
-    public $id_contrato;
+    public $id_fornecedor;
     public $ano = null;
     public $mes;
     public $anosDisponiveis = [];
     public $mesesDisponiveis = [];
+    public $filtroContrato = false; // Variável para controlar o estado do checkbox
     public $filtro = 'todos'; // Radio "Todos" selecionado por padrão
 
     public function logout()
     {
+        // Realiza o logout do usuário atual
         Auth::logout();
+
+        // Redireciona o usuário para a página de login
         return redirect()->route('login');
     }
 
     public function mount()
     {
-        $this->ano = date('Y'); // Define o ano atual
+        // Define a propriedade 'ano' com o valor do ano atual
+        $this->ano = date('Y');
     }
 
-    public function clear() // Limpar o campo de pesquisa
+    public function clear() // Limpa os campos de pesquisa e estado do componente
     {
+        // Reseta todas as propriedades do componente
         $this->reset();
     }
 
-    public function editPayment($id_editarPagamento)  // Envia $id_editarPagamento para editar-pagamento
+    public function editPayment($id_editarPagamento)
     {
+        // Envia o $id_editarPagamento para o evento 'editPaymentById', que será escutado em editar-pagamento.php
         $this->dispatch('editPaymentById', $id_editarPagamento);
     }
 
     public function selectPeriod()
     {
+        // Obtém uma lista distinta de anos a partir da coluna 'vencimento' dos pagamentos
+        // A função 'selectRaw' seleciona o ano e 'distinct' garante que não haja repetições
+        // A lista é ordenada de forma decrescente (mais recente primeiro)
+        // O 'pluck' extrai apenas a coluna 'ano' da consulta
         $this->anosDisponiveis = Pagamento::selectRaw('YEAR(vencimento) as ano')
             ->distinct()
             ->orderBy('ano', 'desc')
             ->pluck('ano');
 
+        // Obtém uma lista distinta de meses a partir da coluna 'vencimento' dos pagamentos
+        // A função 'selectRaw' seleciona o mês e 'distinct' garante que não haja repetições
+        // A lista é ordenada de forma crescente (janeiro primeiro)
+        // O 'pluck' extrai apenas a coluna 'mes' da consulta
         $this->mesesDisponiveis = Pagamento::selectRaw('MONTH(vencimento) as mes')
             ->distinct()
             ->orderBy('mes', 'asc')
             ->pluck('mes');
     }
 
-    public function listContracts()
+    public function listPayments()
     {
         // Inicia a consulta diretamente no modelo de Pagamento
-        $query = Pagamento::with('contrato') // Inclui o relacionamento do contrato
+        $query = Pagamento::with('fornecedor') // Inclui o relacionamento do fornecedor
             ->orderBy('vencimento', 'asc')   // Ordena por vencimento
             ->orderBy('parcela', 'asc');     // Ordena por parcela
 
@@ -76,50 +91,64 @@ class Dashboard extends Component
         // Aplica o filtro baseado no valor do radio selecionado
         switch ($this->filtro) {
             case 'pagos':
-                // Mostrar somente pagamentos que têm data_pagamento
+                // Filtra os registros onde 'data_pagamento' não é nulo (pagamentos realizados)
                 $query->whereNotNull('data_pagamento');
                 break;
             case 'abertos':
-                // Mostrar somente pagamentos em aberto (data_pagamento é null)
+                // Filtra os registros onde 'data_pagamento' é nulo (pagamentos em aberto)
                 $query->whereNull('data_pagamento');
                 break;
             case 'vencimentos':
-                // Mostrar pagamentos em vencimento (vencimento <= data atual e data_pagamento é null)
+                // Filtra os registros onde 'vencimento' é menor ou igual à data atual (pagamentos vencidos)
+                // e onde 'data_pagamento' é nulo (não pagos)
                 $query->where('vencimento', '<=', now())
                     ->whereNull('data_pagamento');
                 break;
             case 'todos':
             default:
-                // Não aplica nenhum filtro adicional, mostra todos os pagamentos
+                // Não aplica nenhum filtro adicional, exibe todos os registros
                 break;
         }
 
-        // Aplica o filtro se um ID de contrato específico foi selecionado
-        if (!empty($this->id_contrato)) {
-            $query->where('contrato_id', $this->id_contrato);
+        // Verifica se o checkbox de "Apenas Pgtos C/ Contrato" está marcado
+        if ($this->filtroContrato) {
+            $query->whereNotNull('contrato');
+        }
+
+        // Aplica o filtro se um ID de fornecedor específico foi selecionado
+        if (!empty($this->id_fornecedor)) {
+            $query->where('fornecedor_id', $this->id_fornecedor);
         }
 
         // Executa a consulta e armazena os resultados
         $this->listaPagamentos = $query->get();
     }
 
-    public function selectContracts()
+    public function selectSuppliers()
     {
-        $this->seletorContratos = Contrato::orderBy('contrato', 'asc')->get(); // Retorna todos os contratos ordenados
+        // Obtém todos os fornecedores da tabela 'fornecedor' e ordena por nome de forma ascendente
+        $this->seletorFornecedores = Fornecedor::orderBy('fornecedor', 'asc')->get();
     }
 
     public function applyFilter()
     {
-        $this->listContracts();
+        // Aplica o filtro chamando o método 'listPayments', que provavelmente filtra os pagamentos
+        $this->listPayments();
     }
 
-    #[On('updateRender')] // Atualiza o render após atualizações
+    #[On('updateRender')] // Define que a função 'render' será atualizada após o evento 'updateRender'
     public function render()
     {
-        $this->listContracts();
-        $this->selectContracts();
+        // Atualiza a lista de pagamentos
+        $this->listPayments();
+
+        // Atualiza a lista de fornecedores
+        $this->selectSuppliers();
+
+        // Atualiza a lista de anos e meses disponíveis
         $this->selectPeriod();
 
+        // Renderiza a visão 'dashboard' no Livewire
         return view('livewire.dashboard');
     }
 }

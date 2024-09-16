@@ -24,24 +24,48 @@
                 <div class="grid gap-4 mb-4 grid-cols-2">
 
                     <div class="col-span-2">
-                        <label for="contrato_id" class="block mb-2 text-sm font-medium text-gray-900">Selecionar
-                            Contrato / Fornecedor</label>
-                        <select id="contrato_id" wire:model.live="contrato_id"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5">
-                            <option value="" selected=""Ï>Selecione o Contrato</option>
-                            @foreach ($listaContratos as $contrato)
-                                <option value="{{ $contrato->id }}">
-                                    {{ $contrato->contrato . ' - ' . $contrato->fornecedor }}</option>
+                        <label for="fornecedor_id" class="block mb-2 text-sm font-medium text-gray-900">Selecionar
+                            Fornecedor</label>
+                        <select id="fornecedor_id" wire:model.live="fornecedor_id"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 uppercase">
+                            <option value="" selected="">Selecione o Fornecedor</option>
+                            @foreach ($listaFornecedores as $fornecedor)
+                                <option value="{{ $fornecedor->id }}">
+                                    {{ $fornecedor->fornecedor }}</option>
                             @endforeach
                         </select>
                     </div>
 
+                    <div class="col-span-1">
+                        <label for="tipo" class="block mb-2 text-sm font-medium text-gray-900">Tipo do
+                            Pagamento</label>
+                        <select id="tipo" wire:model.live="tipoPagamento"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 text-center">
+                            <option value="">Sem Contrato</option>
+                            <option value="1">Com Contrato</option>
+                        </select>
+                    </div>
+
+                    @php
+                        $isContract = empty($this->tipoPagamento);
+                    @endphp
+
+                    <div class="col-span-1">
+                        <label for="contrato" class="block mb-2 text-sm font-medium text-gray-900">Número do
+                            Contrato</label>
+                        <input type="text" name="contrato" id="contrato" wire:model.defer="contrato"
+                            {{ $isContract ? 'disabled' : '' }}
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 {{ $isContract ? 'opacity-50 cursor-not-allowed' : '' }} "
+                            placeholder="XXXXXX/202X" required="" maxlength="15" x-data
+                            x-on:input="$event.target.value = $event.target.value.replace(/[^0-9\/]/g, '').replace(/(\/.*)\/+/, '$1')">
+                    </div>
+
                     <div class="col-span-2">
-                        <label for="responsavel"
-                            class="block mb-2 text-sm font-medium text-gray-900">Responsável</label>
-                        <input type="text" name="responsavel" id="responsavel" wire:model.defer="responsavel"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 uppercase"
-                            placeholder="Responsável pelo serviço ou material" required="" maxlength="30">
+                        <label for="responsavel" class="block mb-2 text-sm font-medium text-gray-900">Responsável /
+                            Descrição</label>
+                        <textarea name="responsavel" id="responsavel" wire:model.defer="responsavel" rows="4" style="resize:none"
+                            class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 uppercase"
+                            placeholder="Responsável e descrição do serviço ou material" required="" maxlength="255"></textarea>
                     </div>
 
                     <div class="col-span-1">
@@ -72,7 +96,8 @@
                         </div>
 
                         <div class="col-span-1">
-                            <label for="valor.{{ $index }}" class="block mb-2 text-sm font-medium text-gray-900">
+                            <label for="valor.{{ $index }}"
+                                class="block mb-2 text-sm font-medium text-gray-900">
                                 Valor ({{ $index + 1 }}ª Parcela)
                             </label>
                             <input type="text" name="valor.{{ $index }}" id="valor.{{ $index }}"
@@ -98,7 +123,7 @@
                     </button>
 
                     @php
-                        $isDisabled = empty($this->contrato_id);
+                        $isDisabled = empty($this->fornecedor_id);
                     @endphp
 
                     <button type="button" wire:click="save"

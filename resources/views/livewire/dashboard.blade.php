@@ -1,4 +1,4 @@
-<div x-data="{ inserirContrato: false, inserirPagamento: false, editarPagamento: false }">
+<div x-data="{ inserirFornecedor: false, inserirPagamento: false, editarPagamento: false }">
 
     <!-- Imagem de Loading -->
     <img wire:loading src="{{ asset('/images/loading.gif') }}" class="w-40 fixed inset-0 mx-auto my-auto z-50"
@@ -30,7 +30,7 @@
 
             {{-- Botão Inserir Contratos --}}
 
-            <button x-on:click="inserirContrato = true"
+            <button x-on:click="inserirFornecedor = true"
                 class="inline-flex items-center px-5 py-2 mx-2 rounded-3xl bg-slate-800 text-white hover:bg-slate-700 duration-500">
                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#ffffff"
                     viewBox="0 0 256 256" class="mr-2">
@@ -38,7 +38,7 @@
                         d="M216,72H131.31L104,44.69A15.86,15.86,0,0,0,92.69,40H40A16,16,0,0,0,24,56V200.62A15.4,15.4,0,0,0,39.38,216H216.89A15.13,15.13,0,0,0,232,200.89V88A16,16,0,0,0,216,72ZM92.69,56l16,16H40V56ZM216,200H40V88H216Zm-88-88a8,8,0,0,1,8,8v16h16a8,8,0,0,1,0,16H136v16a8,8,0,0,1-16,0V152H104a8,8,0,0,1,0-16h16V120A8,8,0,0,1,128,112Z">
                     </path>
                 </svg>
-                Cadastrar Contrato
+                Cadastrar Fornecedor
             </button>
 
             {{-- Botão Inserir Pagamento --}}
@@ -63,13 +63,13 @@
                         d="M80,64a8,8,0,0,1,8-8H216a8,8,0,0,1,0,16H88A8,8,0,0,1,80,64Zm136,56H88a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Zm0,64H88a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16ZM44,52A12,12,0,1,0,56,64,12,12,0,0,0,44,52Zm0,64a12,12,0,1,0,12,12A12,12,0,0,0,44,116Zm0,64a12,12,0,1,0,12,12A12,12,0,0,0,44,180Z">
                     </path>
                 </svg>
-                <select wire:model="id_contrato" id="id_contrato" name="id_contrato"
-                    class="bg-slate-800 text-white text-md text-start py-3 px-2 mr-3 tracking-wider focus:outline-none"
-                    wire:change="listContracts">
-                    <option value="" selected>Exibir Todos os Contratos</option>
-                    @foreach ($seletorContratos as $contrato)
-                        <option value="{{ $contrato->id }}" class="uppercase">
-                            {{ $contrato->contrato . ' - ' . substr($contrato->fornecedor, 0, 10) }}...
+                <select wire:model="id_fornecedor" id="id_fornecedor" name="id_fornecedor"
+                    class="bg-slate-800 text-white text-md text-start py-3 px-2 mr-3 tracking-wider focus:outline-none uppercase"
+                    wire:change="listPayments">
+                    <option value="" selected>Filtrar Fornecedor</option>
+                    @foreach ($seletorFornecedores as $fornecedor)
+                        <option value="{{ $fornecedor->id }}">
+                            {{ $fornecedor->fornecedor }}
                         </option>
                     @endforeach
                 </select>
@@ -121,26 +121,26 @@
                             <th scope="col" class="w-36 px-6 border border-gray-400">
                                 Vencimento
                             </th>
+                            <th scope="col" class="w-32 px-6 border border-gray-400">
+                                Data do Pgto
+                            </th>
                             <th scope="col" class="w-32 px-2 border border-gray-400">
                                 Contrato
                             </th>
                             <th scope="col" class="px-2 border border-gray-400">
-                                Objeto
-                            </th>
-                            <th scope="col" class="px-2 border border-gray-400">
                                 Fornecedor
                             </th>
-                            <th scope="col" class="px-2 border border-gray-400">
-                                Responsável
-                            </th>
-                            <th scope="col" class="w-32 px-2 border border-gray-400">
-                                Parcela
+                            <th scope="col" class="w-32 px-6 border border-gray-400">
+                                Cheque
                             </th>
                             <th scope="col" class="w-32 px-6 border border-gray-400">
                                 Nota Fiscal
                             </th>
-                            <th scope="col" class="w-32 px-6 border border-gray-400">
-                                Data do Pgto
+                            <th scope="col" class="w-32 px-2 border border-gray-400">
+                                Parcela
+                            </th>
+                            <th scope="col" class="px-2 border border-gray-400">
+                                Responsável / Descrição (Obra ou Serviço)
                             </th>
                             <th scope="col" class="w-32 px-6 border border-gray-400">
                                 Data Manut.
@@ -165,16 +165,17 @@
                                     <!-- Painel do Filtro do Dashboard -->
 
                                     <div x-show="open" @click.outside="open = false"
-                                        class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 w-60 p-4 bg-white border border-gray-300 rounded shadow-lg shadow-gray-500 font-light">
+                                        class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 w-72 p-4 bg-white border border-gray-300 rounded shadow-lg shadow-gray-500 font-light">
                                         <p class="uppercase mb-4 text-base">Filtrar Pagamentos:</p>
 
-                                        <form class="flex flex-col items-start justify-start ">
+                                        <form class="flex flex-col items-start justify-start">
 
                                             <div
                                                 class="flex flex-row w-full justify-between py-2 mb-4 gap-1 text-sm border border-gray-400">
 
                                                 <!-- Seletor de Mês -->
-                                                <select wire:model="mes" class="focus:outline-none px-2">
+                                                <select wire:model="mes"
+                                                    class="focus:outline-none px-2 w-40 text-center">
                                                     <option value="">Mês</option>
                                                     @php
                                                         // Mapeamento dos números dos meses para os nomes em português
@@ -210,37 +211,46 @@
                                                 </select>
 
                                             </div>
-
-                                            <div>
-                                                <label class="flex items-center mb-2">
-                                                    <input wire:model="filtro" type="radio" value="todos"
-                                                        class="h-5 w-5 text-blue-600">
-                                                    <span class="ml-2 text-gray-700">Todos</span>
-                                                </label>
-                                                <label class="flex items-center mb-2">
-                                                    <input wire:model="filtro" type="radio" value="pagos"
-                                                        class="h-5 w-5 text-blue-600">
-                                                    <span class="ml-2 text-gray-700">Pagos</span>
-                                                </label>
-                                                <label class="flex items-center mb-2">
-                                                    <input wire:model="filtro" type="radio" value="abertos"
-                                                        class="h-5 w-5 text-blue-600">
-                                                    <span class="ml-2 text-gray-700">Em aberto</span>
-                                                </label>
-                                                <label class="flex items-center mb-2">
-                                                    <input wire:model="filtro" type="radio" value="vencimentos"
-                                                        class="h-5 w-5 text-blue-600">
-                                                    <span class="ml-2 text-gray-700">Em Vencimento</span>
-                                                </label>
-                                            </div>
+                                            <fieldset class="border w-full p-4 text-start">
+                                                <legend>Situação:</legend>
+                                                <div>
+                                                    <label class="flex items-center mb-4">
+                                                        <input wire:model="filtroContrato" type="checkbox"
+                                                            value="1" class="h-5 w-5 text-blue-600">
+                                                        <span class="ml-2 text-gray-700">Apenas Pgtos C/
+                                                            Contrato</span>
+                                                    </label>
+                                                    <label class="flex items-center mb-2">
+                                                        <input wire:model="filtro" type="radio" value="todos"
+                                                            class="h-5 w-5 text-blue-600">
+                                                        <span class="ml-2 text-gray-700">Todos</span>
+                                                    </label>
+                                                    <label class="flex items-center mb-2">
+                                                        <input wire:model="filtro" type="radio" value="pagos"
+                                                            class="h-5 w-5 text-blue-600">
+                                                        <span class="ml-2 text-gray-700">Pagos</span>
+                                                    </label>
+                                                    <label class="flex items-center mb-2">
+                                                        <input wire:model="filtro" type="radio" value="abertos"
+                                                            class="h-5 w-5 text-blue-600">
+                                                        <span class="ml-2 text-gray-700">Em aberto</span>
+                                                    </label>
+                                                    <label class="flex items-center">
+                                                        <input wire:model="filtro" type="radio" value="vencimentos"
+                                                            class="h-5 w-5 text-blue-600">
+                                                        <span class="ml-2 text-gray-700">Em Vencimento
+                                                            ({{ date('d/m/Y') }})</span>
+                                                    </label>
+                                                </div>
+                                            </fieldset>
 
                                         </form>
 
-                                        <div class="flex flex-row w-full justify-between">
+                                        <div class="flex flex-row w-full justify-between mt-4">
                                             <button wire:click="clear"
-                                                class="border border-gray-400 py-2 px-4 my-2 hover:bg-gray-200">Limpar</button>
+                                                class="border border-gray-400 py-2 px-4 hover:bg-gray-200">Limpar</button>
                                             <button wire:click="applyFilter"
-                                                class="border border-gray-400 py-2 px-4 my-2 hover:bg-gray-200">Filtrar</button>
+                                                class="border border-gray-400 py-2 px-4 hover:bg-gray-200">Aplicar</button>
                                         </div>
 
                                     </div>
@@ -280,24 +290,6 @@
                                             @endif
                                         </div>
                                     </th>
-                                    <td class="px-2 text-center border">
-                                        {{ $pagamento->contrato->contrato }}
-                                    </td>
-                                    <td class="px-2 text-center border uppercase">
-                                        {{ $pagamento->contrato->objeto }}
-                                    </td>
-                                    <td class="px-2 text-center border uppercase">
-                                        {{ $pagamento->contrato->fornecedor }}
-                                    </td>
-                                    <td class="px-2 text-center border uppercase">
-                                        {{ $pagamento->responsavel }}
-                                    </td>
-                                    <td class="text-center border">
-                                        0{{ $pagamento->parcela }}
-                                    </td>
-                                    <td class="text-center border">
-                                        {{ $pagamento->nota_fiscal }}
-                                    </td>
                                     <td>
                                         @if ($pagamento->data_pagamento)
                                             <div
@@ -318,11 +310,33 @@
                                         @endif
                                     </td>
                                     <td class="px-2 text-center border">
-                                        <div class="flex flex-row items-center justify-center">
+                                        {{ $pagamento->contrato ?? 'Sem Contrato' }}
+                                    </td>
+                                    <td class="px-2 text-center border uppercase">
+                                        {{ $pagamento->fornecedor->fornecedor }}
+                                    </td>
+                                    <td class="text-center border">
+                                        Cheque
+                                    </td>
+                                    <td class="text-center border">
+                                        {{ $pagamento->nota_fiscal }}
+                                    </td>
+                                    <td class="text-center border">
+                                        0{{ $pagamento->parcela }}
+                                    </td>
+                                    <td class="px-2 text-center border uppercase">
+                                        {{ substr($pagamento->responsavel, 0, 50) }}
+                                    </td>
+                                    <td class="border">
+                                        <div class="flex flex-row items-center justify-center w-full h-full">
                                             @if ($pagamento->data_manutencao)
-                                                <strong>{{ date('d/m/Y', strtotime($pagamento->data_manutencao)) }}</strong>
+                                                <div
+                                                    class="flex flex-row items-center justify-center w-full h-full 
+                                                {{ strtotime($pagamento->data_manutencao) <= strtotime(now()) && !$pagamento->status_manutencao ? 'bg-red-200' : ($pagamento->status_manutencao ? 'bg-green-200' : '') }}">
+                                                    {{ date('d/m/Y', strtotime($pagamento->data_manutencao)) }}
+                                                </div>
                                             @else
-                                                Sem Registro
+                                                -
                                             @endif
                                         </div>
                                     </td>
@@ -356,10 +370,10 @@
 
     </section>
 
-    <div x-show="inserirContrato" x-cloak>
+    <div x-show="inserirFornecedor" x-cloak>
         <div class="fixed z-50 inset-0 overflow-x-hidden overflow-y-hidden">
             <div class="flex flex-col items-center justify-center h-screen w-full bg-slate-700 bg-opacity-90">
-                @livewire('inserir-contrato')
+                @livewire('inserir-fornecedor')
             </div>
         </div>
     </div>
