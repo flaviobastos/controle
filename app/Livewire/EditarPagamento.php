@@ -14,6 +14,7 @@ class EditarPagamento extends Component
     public $vencimento;
     public $parcela;
     public $nota_fiscal;
+    public $cheque;
     public $valor;
     public $data_pagamento;
     public $data_manutencao;
@@ -24,6 +25,7 @@ class EditarPagamento extends Component
         'vencimento' => 'required',  // Campo obrigatório para a data de vencimento
         'parcela' => 'required',  // Campo obrigatório para a parcela
         'nota_fiscal' => 'required',  // Campo obrigatório para a nota fiscal
+        'cheque' => 'nullable|string|max:8',  // Campo opcional, mas se preenchido, deve ser uma string com no máximo 08 caracteres
         'valor' => 'required',  // Campo obrigatório para o valor
         'data_pagamento' => 'nullable|date',  // Campo opcional para data de pagamento, deve ser uma data válida
         'data_manutencao' => 'nullable|date',  // Campo opcional para data de manutenção, deve ser uma data válida
@@ -43,6 +45,9 @@ class EditarPagamento extends Component
             // Valida os dados de acordo com as regras definidas
             $validated = $this->validate();
 
+            // Converte o campo 'responsavel' para uppercase
+            $validated['responsavel'] = mb_strtoupper($validated['responsavel'], 'UTF-8');
+
             // Remove os separadores de milhar e ajusta o formato do valor (de vírgula para ponto)
             $this->valor = str_replace('.', '', $this->valor);  // Remove os pontos
             $this->valor = str_replace(',', '.', $this->valor);  // Substitui vírgulas por pontos
@@ -56,8 +61,9 @@ class EditarPagamento extends Component
             Pagamento::find($this->id_editarPagamento)->update([
                 'responsavel' => $validated['responsavel'],
                 'vencimento' => $this->vencimento,
-                'parcela' => $this->parcela,  // Armazena a parcela
+                'parcela' => $this->parcela,
                 'nota_fiscal' => $this->nota_fiscal,
+                'cheque' => $this->cheque,
                 'valor' => $this->valor,
                 'data_pagamento' => $validated['data_pagamento'],
                 'data_manutencao' => $validated['data_manutencao'],

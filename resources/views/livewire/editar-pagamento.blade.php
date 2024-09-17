@@ -33,7 +33,7 @@
                 <div class="col-span-1">
                     <label for="vencimento" class="block mb-2 text-sm font-medium text-gray-900">Vencimento</label>
                     <input type="date" name="vencimento" id="vencimento" wire:model.defer="vencimento"
-                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 text-center block w-full p-2.5"
                         required="">
                 </div>
 
@@ -49,7 +49,30 @@
                         Fiscal</label>
                     <input type="text" name="nota_fiscal" id="nota_fiscal" wire:model.defer="nota_fiscal"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                        placeholder="00000" required="" maxlength="5" x-mask="99999">
+                        placeholder="12345" required="" maxlength="5" x-mask="99999">
+                </div>
+
+                <div class="col-span-1">
+                    <label for="cheque" class="block mb-2 text-sm font-medium text-gray-900">N. do Cheque</label>
+                    <input type="text" name="cheque" id="cheque" wire:model.defer="cheque"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                        placeholder="12345678" required="" maxlength="8" x-mask="99999999">
+                </div>
+
+                <div class="col-span-1">
+                    <label for="data_pagamento" class="block mb-2 text-sm font-medium text-gray-900">Data
+                        Pagamento</label>
+                    <input type="date" name="data_pagamento" id="data_pagamento" wire:model.defer="data_pagamento"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 text-center"
+                        required="">
+                </div>
+
+                <div class="col-span-1">
+                    <label for="data_manutencao" class="block mb-2 text-sm font-medium text-gray-900">Data
+                        Manutenção</label>
+                    <input type="date" name="data_manutencao" id="data_manutencao" wire:model.defer="data_manutencao"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 text-center"
+                        required="">
                 </div>
 
                 <div class="col-span-1">
@@ -59,24 +82,14 @@
                         placeholder="R$ 0,00" required="" maxlength="14" x-mask:dynamic="$money($input, ',')">
                 </div>
 
-                <div class="col-span-1">
-                    <label for="data_pagamento" class="block mb-2 text-sm font-medium text-gray-900">Data
-                        Pagamento</label>
-                    <input type="date" name="data_pagamento" id="data_pagamento" wire:model.defer="data_pagamento"
-                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                        required="">
-                </div>
-
-                <div class="col-span-1">
-                    <label for="data_manutencao" class="block mb-2 text-sm font-medium text-gray-900">Data
+                <div class="col-span-1 flex flex-col items-start justify-center">
+                    <label for="status_manutencao" class="block mb-2 text-sm font-medium text-gray-900">Status
                         Manutenção</label>
-                    <input type="date" name="data_manutencao" id="data_manutencao" wire:model.defer="data_manutencao"
-                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                        required="">
-                    <label class="flex items-center justify-start">
-                        <span class="mr-4 text-gray-700 text-sm font-normal uppercase my-3">Manut. Concluída</span>
+                    <div
+                        class="flex items-center justify-between bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5 mr-2">
+                        <span class="mr-2">Manut. Concluída</span>
                         <input wire:model.live="status_manutencao" type="checkbox" class="h-5 w-5 text-blue-600">
-                    </label>
+                    </div>
                 </div>
 
             </div>

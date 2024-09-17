@@ -59,6 +59,9 @@ class InserirPagamento extends Component
             // Valida os dados conforme as regras
             $validated = $this->validate();
 
+            // Converte os campos para uppercase usando mb_strtoupper() com encoding UTF-8
+            $validated['responsavel'] = mb_strtoupper($validated['responsavel'], 'UTF-8');
+
             // Adiciona o fornecedor_id ao array validado
             $validated['fornecedor_id'] = $this->fornecedor_id;
 

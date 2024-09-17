@@ -69,6 +69,11 @@ class InserirFornecedor extends Component
     {
         // Valida os dados conforme as regras
         $validated = $this->validate();
+
+        // Converte os campos para uppercase usando mb_strtoupper() com encoding UTF-8
+        $validated['fornecedor'] = mb_strtoupper($validated['fornecedor'], 'UTF-8');
+        $validated['objeto'] = mb_strtoupper($validated['objeto'], 'UTF-8');
+
         // Processa a criação ou atualização do fornecedor
         $this->processSupplierCreation($validated);
     }
@@ -108,6 +113,10 @@ class InserirFornecedor extends Component
     {
         // Valida os dados conforme as regras
         $validated = $this->validate();
+
+        // Converte os campos para uppercase usando mb_strtoupper() com encoding UTF-8
+        $validated['fornecedor'] = mb_strtoupper($validated['fornecedor'], 'UTF-8');
+        $validated['objeto'] = mb_strtoupper($validated['objeto'], 'UTF-8');
 
         // Busca o fornecedor com base no CNPJ fornecido
         $fornecedor = Fornecedor::where('cnpj', $validated['cnpj'])->first();

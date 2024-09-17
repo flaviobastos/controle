@@ -16,6 +16,7 @@ class Pagamento extends Model
         'responsavel',
         'parcela',
         'nota_fiscal',
+        'cheque',
         'valor',
         'data_pagamento',
         'data_manutencao',

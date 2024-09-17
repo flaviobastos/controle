@@ -316,7 +316,7 @@
                                         {{ $pagamento->fornecedor->fornecedor }}
                                     </td>
                                     <td class="text-center border">
-                                        Cheque
+                                        {{ $pagamento->cheque ?? '-' }}
                                     </td>
                                     <td class="text-center border">
                                         {{ $pagamento->nota_fiscal }}

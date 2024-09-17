@@ -27,7 +27,7 @@
                         <label for="fornecedor_id" class="block mb-2 text-sm font-medium text-gray-900">Selecionar
                             Fornecedor</label>
                         <select id="fornecedor_id" wire:model.live="fornecedor_id"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 uppercase">
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 text-center uppercase">
                             <option value="" selected="">Selecione o Fornecedor</option>
                             @foreach ($listaFornecedores as $fornecedor)
                                 <option value="{{ $fornecedor->id }}">
@@ -55,14 +55,13 @@
                             Contrato</label>
                         <input type="text" name="contrato" id="contrato" wire:model.defer="contrato"
                             {{ $isContract ? 'disabled' : '' }}
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 {{ $isContract ? 'opacity-50 cursor-not-allowed' : '' }} "
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 text-center {{ $isContract ? 'opacity-50 cursor-not-allowed' : '' }} "
                             placeholder="XXXXXX/202X" required="" maxlength="15" x-data
                             x-on:input="$event.target.value = $event.target.value.replace(/[^0-9\/]/g, '').replace(/(\/.*)\/+/, '$1')">
                     </div>
 
                     <div class="col-span-2">
-                        <label for="responsavel" class="block mb-2 text-sm font-medium text-gray-900">Responsável /
-                            Descrição</label>
+                        <label for="responsavel" class="block mb-2 text-sm font-medium text-gray-900">Responsável e Descrição do material/serviço</label>
                         <textarea name="responsavel" id="responsavel" wire:model.defer="responsavel" rows="4" style="resize:none"
                             class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 uppercase"
                             placeholder="Responsável e descrição do serviço ou material" required="" maxlength="255"></textarea>
@@ -71,7 +70,7 @@
                     <div class="col-span-1">
                         <label for="vencimento" class="block mb-2 text-sm font-medium text-gray-900">Vencimento</label>
                         <input type="date" name="vencimento" id="vencimento" wire:model.defer="vencimento"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block text-center w-full p-2.5"
                             required="">
                     </div>
 
