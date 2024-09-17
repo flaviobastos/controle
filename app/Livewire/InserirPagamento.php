@@ -14,17 +14,17 @@ class InserirPagamento extends Component
     public $tipoPagamento;
     public $responsavel; // Campo do formulário
     public $contrato; // Campo do formulário
-    public $vencimento; // Campo do formulário
+    public $vencimento = []; // Campo do formulário
     public $parcela = 1; // Campo do formulário
     public $valor = []; // Campo do formulário
     public $nota_fiscal = []; // Campo do formulário
 
     protected $rules = [
         'responsavel' => 'required',  // Campo obrigatório para o responsável
-        'vencimento' => 'required',  // Campo obrigatório para a data de vencimento
-        'parcela' => 'required',  // Campo obrigatório para a quantidade de parcelas
-        'nota_fiscal' => 'required',  // Campo obrigatório para a nota fiscal
-        'valor' => 'required',  // Campo obrigatório para o valor
+        'vencimento.*' => 'required|date',  // Valida cada vencimento como uma data
+        'parcela' => 'required|integer|min:1|max:5',  // Campo obrigatório para a quantidade de parcelas
+        'nota_fiscal.*' => 'nullable',  // Valida que cada nota fiscal seja preenchida
+        'valor.*' => 'required|numeric|min:0',  // Valida que cada valor seja preenchido e seja um número
         'contrato' => 'nullable',  // O contrato é opcional
         // 'data_pagamento' => 'nullable|date',
         // 'data_manutencao' => 'nullable|date',
@@ -32,12 +32,19 @@ class InserirPagamento extends Component
 
     public function updatedParcela($qtdParcelas) // Chamado ao atualizar a quantidade de parcelas
     {
-        $qtdParcelas = max(1, intval($qtdParcelas));  // Garante que o valor seja pelo menos 1
+        $qtdParcelas = max(1, intval($qtdParcelas)); // Garante que o valor seja pelo menos 1
         $this->parcela = $qtdParcelas;
 
-        // Ajusta os arrays $valor e $nota_fiscal de acordo com o número de parcelas
+        // Ajusta os arrays conforme a quantidade de parcelas
         $this->valor = array_pad(array_slice($this->valor, 0, $this->parcela), $this->parcela, '');
         $this->nota_fiscal = array_pad(array_slice($this->nota_fiscal, 0, $this->parcela), $this->parcela, '');
+        $this->vencimento = array_pad(array_slice($this->vencimento, 0, $this->parcela), $this->parcela, '');
+    }
+
+    public function updatedTipoPagamento() // Chamado automaticamente sempre que a propriedade 'tipoPagamento' é atualizada.
+    {
+        // Verifica se tipoPagamento é null, se for, o campo 'contrato' será resetado, caso contrário, não faz nada
+        $this->tipoPagamento == null ? $this->reset('contrato') : null;
     }
 
     public function mount() // Inicializa os valores ao montar o componente
@@ -50,6 +57,11 @@ class InserirPagamento extends Component
         // Garante que sempre haja pelo menos um campo de nota fiscal
         if (count($this->nota_fiscal) < 1) {
             $this->nota_fiscal[] = '';
+        }
+
+        // Garante que sempre haja pelo menos um campo de vencimento
+        if (count($this->vencimento) < 1) {
+            $this->vencimento[] = '';
         }
     }
 
@@ -70,31 +82,30 @@ class InserirPagamento extends Component
             $this->valor = str_replace(',', '.', $this->valor);  // Substitui a vírgula decimal por ponto
             $validated['valor'] = $this->valor;
 
-            // Converte a data de vencimento para um objeto DateTime
-            $vencimento = new \DateTime($this->vencimento);
-
             // Verifica se o tipo de pagamento deve incluir o contrato ou não
             $contrato = $this->tipoPagamento ? $this->contrato : null;
 
             // Itera sobre as parcelas e salva cada uma como uma linha separada no banco
             foreach ($this->nota_fiscal as $index => $notaFiscal) {
-                // Prepara os dados para inserir no banco de dados
+
+                // Verifica se o campo nota_fiscal está vazio e atribui null
+                $notaFiscal = empty($notaFiscal) ? null : $notaFiscal;
+
+                // Formata a parcela como 1/3, 2/3, etc.
+                $parcelaFormatada = ($index + 1) . '/' . $this->parcela;
+
                 $dados = [
                     'responsavel' => $validated['responsavel'],
-                    'vencimento' => $vencimento,  // Define o vencimento desta parcela
-                    'parcela' => $index + 1,  // Índice baseado em 1 para a parcela
+                    'vencimento' => $this->vencimento[$index],  // Define o vencimento para cada parcela
+                    'parcela' => $parcelaFormatada,  // Formato 1/3, 2/3, etc.
                     'nota_fiscal' => $notaFiscal,
                     'valor' => $this->valor[$index],
-                    'fornecedor_id' => $validated['fornecedor_id'],  // Inclui o fornecedor_id
-                    'contrato' => $contrato,  // Define o contrato ou null (definido fora do loop)
-                    'status_manutencao' => false,  // Define status_manutencao como false por padrão
+                    'fornecedor_id' => $validated['fornecedor_id'],
+                    'contrato' => $contrato,
+                    'status_manutencao' => false,
                 ];
 
-                // Insere os dados no banco de dados
                 Pagamento::create($dados);
-
-                // Adiciona 30 dias ao vencimento para a próxima parcela
-                $vencimento->modify('+30 days');
             }
 
             // Notifica o sucesso da operação

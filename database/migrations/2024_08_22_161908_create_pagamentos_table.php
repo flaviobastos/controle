@@ -18,7 +18,7 @@ return new class extends Migration
             $table->date('vencimento');
             $table->string('parcela', 5);
             $table->text('responsavel');
-            $table->string('nota_fiscal', 5);
+            $table->string('nota_fiscal', 8)->nullable();
             $table->string('cheque', 8)->nullable();
             $table->decimal('valor', 11, 2);
             $table->date('data_pagamento')->nullable();

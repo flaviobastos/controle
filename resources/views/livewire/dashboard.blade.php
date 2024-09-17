@@ -319,10 +319,10 @@
                                         {{ $pagamento->cheque ?? '-' }}
                                     </td>
                                     <td class="text-center border">
-                                        {{ $pagamento->nota_fiscal }}
+                                        {{ $pagamento->nota_fiscal ?? '-' }}
                                     </td>
                                     <td class="text-center border">
-                                        0{{ $pagamento->parcela }}
+                                        {{ $pagamento->parcela }}
                                     </td>
                                     <td class="px-2 text-center border uppercase">
                                         {{ substr($pagamento->responsavel, 0, 50) }}

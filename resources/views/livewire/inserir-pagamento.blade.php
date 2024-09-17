@@ -1,4 +1,4 @@
-    <div class="relative p-4 w-full max-w-md max-h-full">
+    <div class="relative p-4 w-full max-w-2xl max-h-full">
         <!-- Imagem de Loading -->
         <img wire:loading src="{{ asset('/images/loading.gif') }}" class="w-40 fixed inset-0 mx-auto my-auto z-50"
             alt="Loading">
@@ -20,10 +20,10 @@
                 </button>
             </div>
             <!-- Modal body -->
-            <form class="p-4 md:p-5">
-                <div class="grid gap-4 mb-4 grid-cols-2">
+            <form class="p-4">
+                <div class="grid gap-4 mb-4 grid-cols-3">
 
-                    <div class="col-span-2">
+                    <div class="col-span-3">
                         <label for="fornecedor_id" class="block mb-2 text-sm font-medium text-gray-900">Selecionar
                             Fornecedor</label>
                         <select id="fornecedor_id" wire:model.live="fornecedor_id"
@@ -34,6 +34,14 @@
                                     {{ $fornecedor->fornecedor }}</option>
                             @endforeach
                         </select>
+                    </div>
+
+                    <div class="col-span-3">
+                        <label for="responsavel" class="block mb-2 text-sm font-medium text-gray-900">Responsável e
+                            Descrição do Material/Serviço</label>
+                        <textarea name="responsavel" id="responsavel" wire:model.defer="responsavel" rows="4" style="resize:none"
+                            class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 uppercase"
+                            placeholder="Responsável e descrição do serviço ou material" required="" maxlength="255"></textarea>
                     </div>
 
                     <div class="col-span-1">
@@ -60,26 +68,13 @@
                             x-on:input="$event.target.value = $event.target.value.replace(/[^0-9\/]/g, '').replace(/(\/.*)\/+/, '$1')">
                     </div>
 
-                    <div class="col-span-2">
-                        <label for="responsavel" class="block mb-2 text-sm font-medium text-gray-900">Responsável e Descrição do material/serviço</label>
-                        <textarea name="responsavel" id="responsavel" wire:model.defer="responsavel" rows="4" style="resize:none"
-                            class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 uppercase"
-                            placeholder="Responsável e descrição do serviço ou material" required="" maxlength="255"></textarea>
-                    </div>
-
-                    <div class="col-span-1">
-                        <label for="vencimento" class="block mb-2 text-sm font-medium text-gray-900">Vencimento</label>
-                        <input type="date" name="vencimento" id="vencimento" wire:model.defer="vencimento"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block text-center w-full p-2.5"
-                            required="">
-                    </div>
-
                     <div class="col-span-1">
                         <label for="parcelas" class="block mb-2 text-sm font-medium text-gray-900">Qtd.
                             Parcela(s)</label>
                         <input type="number" name="parcelas" id="parcelas" wire:model.live.debounce.1000ms="parcela"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
-                            placeholder="" min="1" max="5" required="">
+                            placeholder="" min="1" max="5" required=""
+                            oninput="if(this.value > 5) this.value = 5">
                     </div>
 
                     @foreach ($valor as $index => $valorItem)
@@ -91,7 +86,7 @@
                             <input type="text" name="nota_fiscal.{{ $index }}"
                                 id="nota_fiscal.{{ $index }}" wire:model.defer="nota_fiscal.{{ $index }}"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
-                                placeholder="00000" required="" maxlength="5" x-mask="99999">
+                                placeholder="00000" required="" maxlength="8" x-mask="99999999">
                         </div>
 
                         <div class="col-span-1">
@@ -105,7 +100,20 @@
                                 placeholder="R$ 0,00" required="" maxlength="14"
                                 x-mask:dynamic="$money($input, ',')">
                         </div>
+
+                        <div class="col-span-1">
+                            <label for="vencimento.{{ $index }}"
+                                class="block mb-2 text-sm font-medium text-gray-900">
+                                Vencimento ({{ $index + 1 }}ª Parcela)
+                            </label>
+                            <input type="date" name="vencimento.{{ $index }}"
+                                id="vencimento.{{ $index }}"
+                                wire:model.defer="vencimento.{{ $index }}"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
+                                required="">
+                        </div>
                     @endforeach
+
                 </div>
 
                 <div class="flex flex-row items-center justify-between">

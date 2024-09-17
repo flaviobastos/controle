@@ -8,7 +8,6 @@ use Livewire\Component;
 
 class EditarPagamento extends Component
 {
-
     public $id_editarPagamento;
     public $responsavel;
     public $vencimento;
@@ -24,7 +23,7 @@ class EditarPagamento extends Component
         'responsavel' => 'required',  // Campo obrigatório para o responsável
         'vencimento' => 'required',  // Campo obrigatório para a data de vencimento
         'parcela' => 'required',  // Campo obrigatório para a parcela
-        'nota_fiscal' => 'required',  // Campo obrigatório para a nota fiscal
+        'nota_fiscal' => 'nullable',  // Campo obrigatório para a nota fiscal
         'cheque' => 'nullable|string|max:8',  // Campo opcional, mas se preenchido, deve ser uma string com no máximo 08 caracteres
         'valor' => 'required',  // Campo obrigatório para o valor
         'data_pagamento' => 'nullable|date',  // Campo opcional para data de pagamento, deve ser uma data válida
@@ -56,6 +55,9 @@ class EditarPagamento extends Component
             // Verifica se os campos de data estão vazios e os define como null se necessário
             $validated['data_pagamento'] = empty($this->data_pagamento) ? null : $this->data_pagamento;
             $validated['data_manutencao'] = empty($this->data_manutencao) ? null : $this->data_manutencao;
+
+            // Verifica se o campo nota_fiscal está vazio e atribui null
+            $this->nota_fiscal = empty($this->nota_fiscal) ? null : $this->nota_fiscal;
 
             // Atualiza o pagamento no banco de dados
             Pagamento::find($this->id_editarPagamento)->update([

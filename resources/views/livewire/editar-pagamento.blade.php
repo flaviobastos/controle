@@ -24,7 +24,8 @@
             <div class="grid gap-4 mb-4 grid-cols-2">
 
                 <div class="col-span-2">
-                    <label for="responsavel" class="block mb-2 text-sm font-medium text-gray-900">Responsável</label>
+                    <label for="responsavel" class="block mb-2 text-sm font-medium text-gray-900">Responsável e
+                        Descrição do Material/Serviço</label>
                     <textarea name="responsavel" id="responsavel" wire:model.defer="responsavel" rows="4" style="resize:none"
                         class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 uppercase"
                         placeholder="Responsável e descrição do serviço ou material" required="" maxlength="255"></textarea>
@@ -41,7 +42,7 @@
                     <label for="parcela" class="block mb-2 text-sm font-medium text-gray-900">Parcela</label>
                     <input type="text" name="parcela" id="parcela" wire:model.defer="parcela"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                        placeholder="00" required="" maxlength="5" x-mask="99">
+                        placeholder="00" required="" maxlength="5">
                 </div>
 
                 <div class="col-span-1">
@@ -49,7 +50,7 @@
                         Fiscal</label>
                     <input type="text" name="nota_fiscal" id="nota_fiscal" wire:model.defer="nota_fiscal"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                        placeholder="12345" required="" maxlength="5" x-mask="99999">
+                        placeholder="12345" required="" maxlength="8" x-mask="99999999">
                 </div>
 
                 <div class="col-span-1">
