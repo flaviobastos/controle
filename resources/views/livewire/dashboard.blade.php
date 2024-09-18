@@ -22,12 +22,6 @@
 
         <div class="flex flex-row items-center justify-center">
 
-            <div class="flex flex-row items-center justify-start text-sm text-white px-2">
-                @php
-                    echo date('d/m/Y H:i:s', strtotime(now()));
-                @endphp
-            </div>
-
             {{-- Botão Inserir Contratos --}}
 
             <button x-on:click="inserirFornecedor = true"
@@ -54,30 +48,9 @@
                 Inserir Pagamento
             </button>
 
-            {{-- Seletor de Contratos --}}
-
-            <div class="flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#ffffff"
-                    viewBox="0 0 256 256" class="mr-2">
-                    <path
-                        d="M80,64a8,8,0,0,1,8-8H216a8,8,0,0,1,0,16H88A8,8,0,0,1,80,64Zm136,56H88a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Zm0,64H88a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16ZM44,52A12,12,0,1,0,56,64,12,12,0,0,0,44,52Zm0,64a12,12,0,1,0,12,12A12,12,0,0,0,44,116Zm0,64a12,12,0,1,0,12,12A12,12,0,0,0,44,180Z">
-                    </path>
-                </svg>
-                <select wire:model="id_fornecedor" id="id_fornecedor" name="id_fornecedor"
-                    class="bg-slate-800 text-white text-md text-start py-3 px-2 mr-3 tracking-wider focus:outline-none uppercase"
-                    wire:change="listPayments">
-                    <option value="" selected>Filtrar Fornecedor</option>
-                    @foreach ($seletorFornecedores as $fornecedor)
-                        <option value="{{ $fornecedor->id }}">
-                            {{ $fornecedor->fornecedor }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-
             {{-- Campo de Busca --}}
 
-            {{--             <div class="bg-gray-50 border border-gray-400 rounded-3xl shadow-md text-nowrap">
+            <div class="bg-gray-50 border border-gray-400 rounded-3xl shadow-md text-nowrap">
                 <div class="flex flex-row items-center justify-center py-1">
 
                     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#000000"
@@ -104,7 +77,7 @@
                     </button>
 
                 </div>
-            </div> --}}
+            </div>
 
         </div>
 
@@ -165,17 +138,36 @@
                                     <!-- Painel do Filtro do Dashboard -->
 
                                     <div x-show="open" @click.outside="open = false"
-                                        class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 w-72 p-4 bg-white border border-gray-300 rounded shadow-lg shadow-gray-500 font-light">
+                                        class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 w-80 p-4 bg-white border border-gray-300 rounded shadow-lg shadow-gray-500 font-light">
                                         <p class="uppercase mb-4 text-base">Filtrar Pagamentos:</p>
 
                                         <form class="flex flex-col items-start justify-start">
+
+                                            {{-- Seletor de Contratos --}}
+
+                                            <div
+                                                class="flex flex-row w-full items-center justify-center py-2 mb-2 text-sm border border-gray-400">
+                                                <select wire:model="id_fornecedor" id="id_fornecedor"
+                                                    name="id_fornecedor"
+                                                    class="w-full text-center uppercase focus:outline-none px-2"
+                                                    wire:change="listPayments">
+                                                    <option value="" selected>Fornecedores (Todos)</option>
+                                                    @foreach ($seletorFornecedores as $fornecedor)
+                                                        <option value="{{ $fornecedor->id }}">
+                                                            {{ $fornecedor->fornecedor }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+
+                                            <!-- Filtro de Período -->
 
                                             <div
                                                 class="flex flex-row w-full justify-between py-2 mb-4 gap-1 text-sm border border-gray-400">
 
                                                 <!-- Seletor de Mês -->
                                                 <select wire:model="mes"
-                                                    class="focus:outline-none px-2 w-40 text-center">
+                                                    class="focus:outline-none px-2 w-40 text-center uppercase">
                                                     <option value="">Mês</option>
                                                     @php
                                                         // Mapeamento dos números dos meses para os nomes em português
@@ -258,114 +250,120 @@
                             </th>
                         </tr>
                     </thead>
-                    @if ($this->listaPagamentos->isNotEmpty())
-                        @foreach ($this->listaPagamentos as $pagamento)
-                            <tbody>
-                                <tr class="bg-white border">
-                                    <th scope="row"
-                                        class="font-normal bg-gray-100 text-gray-900 text-center border">
-                                        <div class="flex flex-row items-center justify-center">
-                                            {{ date('d/m/Y', strtotime($pagamento->vencimento)) }}
-                                            @if ($pagamento->data_pagamento)
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                                    fill="#17b052" viewBox="0 0 256 256" class="ml-2">
-                                                    <path
-                                                        d="M173.66,98.34a8,8,0,0,1,0,11.32l-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35A8,8,0,0,1,173.66,98.34ZM232,128A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z">
-                                                    </path>
-                                                </svg>
-                                            @elseif (strtotime($pagamento->vencimento) <= strtotime(now()))
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                                    fill="#ee2020" viewBox="0 0 256 256" class="ml-2">
-                                                    <path
-                                                        d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm-8-80V80a8,8,0,0,1,16,0v56a8,8,0,0,1-16,0Zm20,36a12,12,0,1,1-12-12A12,12,0,0,1,140,172Z">
-                                                    </path>
-                                                </svg>
-                                            @else
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                                    fill="#000000" viewBox="0 0 256 256" class="ml-2">
-                                                    <path
-                                                        d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm-8-80V80a8,8,0,0,1,16,0v56a8,8,0,0,1-16,0Zm20,36a12,12,0,1,1-12-12A12,12,0,0,1,140,172Z">
-                                                    </path>
-                                                </svg>
-                                            @endif
-                                        </div>
-                                    </th>
-                                    <td>
+                    @foreach ($this->listaPagamentos as $pagamento)
+                        <tbody>
+                            <tr class="bg-white border">
+                                <th scope="row" class="font-normal bg-gray-100 text-gray-900 text-center border">
+                                    <div class="flex flex-row items-center justify-center">
+                                        {{ date('d/m/Y', strtotime($pagamento->vencimento)) }}
                                         @if ($pagamento->data_pagamento)
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                                fill="#17b052" viewBox="0 0 256 256" class="ml-2">
+                                                <path
+                                                    d="M173.66,98.34a8,8,0,0,1,0,11.32l-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35A8,8,0,0,1,173.66,98.34ZM232,128A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z">
+                                                </path>
+                                            </svg>
+                                        @elseif (strtotime($pagamento->vencimento) <= strtotime(now()))
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                                fill="#ee2020" viewBox="0 0 256 256" class="ml-2">
+                                                <path
+                                                    d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm-8-80V80a8,8,0,0,1,16,0v56a8,8,0,0,1-16,0Zm20,36a12,12,0,1,1-12-12A12,12,0,0,1,140,172Z">
+                                                </path>
+                                            </svg>
+                                        @else
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                                fill="#000000" viewBox="0 0 256 256" class="ml-2">
+                                                <path
+                                                    d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm-8-80V80a8,8,0,0,1,16,0v56a8,8,0,0,1-16,0Zm20,36a12,12,0,1,1-12-12A12,12,0,0,1,140,172Z">
+                                                </path>
+                                            </svg>
+                                        @endif
+                                    </div>
+                                </th>
+                                <td>
+                                    @if ($pagamento->data_pagamento)
+                                        <div
+                                            class="bg-green-200 flex flex-row items-center justify-center w-full h-full">
+                                            {{ date('d/m/Y', strtotime($pagamento->data_pagamento)) }}
+                                        </div>
+                                    @else
+                                        @php
+                                            $status =
+                                                strtotime($pagamento->vencimento) <= strtotime(now())
+                                                    ? 'Em Vencimento'
+                                                    : 'Em Aberto';
+                                        @endphp
+                                        <div
+                                            class="flex flex-row items-center justify-center w-full h-full {{ strtotime($pagamento->vencimento) <= strtotime(now()) ? 'bg-red-200' : '' }}">
+                                            {{ $status }}
+                                        </div>
+                                    @endif
+                                </td>
+                                <td class="px-2 text-center border">
+                                    {{ $pagamento->contrato ?? 'Sem Contrato' }}
+                                </td>
+                                <td class="px-2 text-center border uppercase">
+                                    {{ $pagamento->fornecedor->fornecedor }}
+                                </td>
+                                <td class="text-center border">
+                                    {{ $pagamento->cheque ?? '-' }}
+                                </td>
+                                <td class="text-center border">
+                                    {{ $pagamento->nota_fiscal ?? '-' }}
+                                </td>
+                                <td class="text-center border">
+                                    {{ $pagamento->parcela }}
+                                </td>
+                                <td class="px-2 text-center border uppercase">
+                                    {{ substr($pagamento->responsavel, 0, 50) }}
+                                </td>
+                                <td class="border">
+                                    <div class="flex flex-row items-center justify-center w-full h-full">
+                                        @if ($pagamento->data_manutencao)
                                             <div
-                                                class="bg-green-200 flex flex-row items-center justify-center w-full h-full">
-                                                {{ date('d/m/Y', strtotime($pagamento->data_pagamento)) }}
+                                                class="flex flex-row items-center justify-center w-full h-full 
+                                                {{ strtotime($pagamento->data_manutencao) <= strtotime(now()) && !$pagamento->status_manutencao ? 'bg-red-200' : ($pagamento->status_manutencao ? 'bg-green-200' : '') }}">
+                                                {{ date('d/m/Y', strtotime($pagamento->data_manutencao)) }}
                                             </div>
                                         @else
-                                            @php
-                                                $status =
-                                                    strtotime($pagamento->vencimento) <= strtotime(now())
-                                                        ? 'Em Vencimento'
-                                                        : 'Em Aberto';
-                                            @endphp
-                                            <div
-                                                class="flex flex-row items-center justify-center w-full h-full {{ strtotime($pagamento->vencimento) <= strtotime(now()) ? 'bg-red-200' : '' }}">
-                                                {{ $status }}
-                                            </div>
+                                            -
                                         @endif
-                                    </td>
-                                    <td class="px-2 text-center border">
-                                        {{ $pagamento->contrato ?? 'Sem Contrato' }}
-                                    </td>
-                                    <td class="px-2 text-center border uppercase">
-                                        {{ $pagamento->fornecedor->fornecedor }}
-                                    </td>
-                                    <td class="text-center border">
-                                        {{ $pagamento->cheque ?? '-' }}
-                                    </td>
-                                    <td class="text-center border">
-                                        {{ $pagamento->nota_fiscal ?? '-' }}
-                                    </td>
-                                    <td class="text-center border">
-                                        {{ $pagamento->parcela }}
-                                    </td>
-                                    <td class="px-2 text-center border uppercase">
-                                        {{ substr($pagamento->responsavel, 0, 50) }}
-                                    </td>
-                                    <td class="border">
-                                        <div class="flex flex-row items-center justify-center w-full h-full">
-                                            @if ($pagamento->data_manutencao)
-                                                <div
-                                                    class="flex flex-row items-center justify-center w-full h-full 
-                                                {{ strtotime($pagamento->data_manutencao) <= strtotime(now()) && !$pagamento->status_manutencao ? 'bg-red-200' : ($pagamento->status_manutencao ? 'bg-green-200' : '') }}">
-                                                    {{ date('d/m/Y', strtotime($pagamento->data_manutencao)) }}
-                                                </div>
-                                            @else
-                                                -
-                                            @endif
-                                        </div>
-                                    </td>
-                                    <td class="flex flex-row items-center justify-between px-2 h-14">
-                                        <div>(R$)</div>
-                                        <div>{{ number_format($pagamento->valor, 2, ',', '.') }}</div>
-                                    </td>
-                                    <td class="bg-gray-100 border border-gray-400">
-                                        <button wire:click="editPayment({{ $pagamento->id }})"
-                                            x-on:click="editarPagamento = true"
-                                            class="w-full h-full px-2 py-2 text-sm inline-flex items-center justify-center text-center hover:bg-gray-300 duration-500 uppercase">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                                fill="currentColor" class="size-5 mr-2">
-                                                <path
-                                                    d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32l8.4-8.4Z" />
-                                                <path
-                                                    d="M5.25 5.25a3 3 0 0 0-3 3v10.5a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3V13.5a.75.75 0 0 0-1.5 0v5.25a1.5 1.5 0 0 1-1.5 1.5H5.25a1.5 1.5 0 0 1-1.5-1.5V8.25a1.5 1.5 0 0 1 1.5-1.5h5.25a.75.75 0 0 0 0-1.5H5.25Z" />
-                                            </svg>
-                                            Editar Pgto
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        @endforeach
-                    @else
-                        <p class="text-center mb-5">Nenhum pagamento encontrado.</p>
-                    @endif
+                                    </div>
+                                </td>
+                                <td class="flex flex-row items-center justify-between px-2 h-14">
+                                    <div>(R$)</div>
+                                    <div>{{ number_format($pagamento->valor, 2, ',', '.') }}</div>
+                                </td>
+                                <td class="bg-gray-100 border border-gray-400">
+                                    <button wire:click="editPayment({{ $pagamento->id }})"
+                                        x-on:click="editarPagamento = true"
+                                        class="w-full h-full px-2 py-2 text-sm inline-flex items-center justify-center text-center hover:bg-gray-300 duration-500 uppercase">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                            fill="currentColor" class="size-5 mr-2">
+                                            <path
+                                                d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32l8.4-8.4Z" />
+                                            <path
+                                                d="M5.25 5.25a3 3 0 0 0-3 3v10.5a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3V13.5a.75.75 0 0 0-1.5 0v5.25a1.5 1.5 0 0 1-1.5 1.5H5.25a1.5 1.5 0 0 1-1.5-1.5V8.25a1.5 1.5 0 0 1 1.5-1.5h5.25a.75.75 0 0 0 0-1.5H5.25Z" />
+                                        </svg>
+                                        Editar Pgto
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    @endforeach
                 </table>
             </div>
+        </div>
+
+        @if ($this->listaPagamentos->isEmpty())
+            <p class="text-center w-full bg-gray-600 text-white py-2">Nenhum resultado
+                encontrado.</p>
+        @endif
+
+        <div class="flex flex-row items-center justify-end absolute bottom-0 w-full text-sm my-4 px-4">
+            @php
+                echo date('d/m/Y H:i:s', strtotime(now()));
+            @endphp
         </div>
 
     </section>

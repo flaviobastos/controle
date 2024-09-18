@@ -14,7 +14,7 @@ class Dashboard extends Component
     public $listaFornecedores;
     public $listaPagamentos;
     public $seletorFornecedores;
-    public $buscar;
+    public $buscar = '';
     public $id_fornecedor;
     public $ano = null;
     public $mes;
@@ -36,12 +36,16 @@ class Dashboard extends Component
     {
         // Define a propriedade 'ano' com o valor do ano atual
         $this->ano = date('Y');
+
+        // Chama a listagem de pagamentos inicialmente
+        $this->listPayments();
     }
 
     public function clear() // Limpa os campos de pesquisa e estado do componente
     {
-        // Reseta todas as propriedades do componente
+        // Limpa o campo de busca e executa a busca novamente
         $this->reset();
+        $this->listPayments();
     }
 
     public function editPayment($id_editarPagamento)
@@ -69,6 +73,27 @@ class Dashboard extends Component
             ->distinct()
             ->orderBy('mes', 'asc')
             ->pluck('mes');
+    }
+
+    public function updatedBuscar()
+    {
+        // Inicia a consulta diretamente no modelo de Pagamento
+        $query = Pagamento::with('fornecedor')
+            ->orderBy('vencimento', 'asc')
+            ->orderBy('parcela', 'asc');
+
+        // Aplica os filtros de busca nas colunas
+        $query->where(function ($q) {
+            $q->where('nota_fiscal', 'like', '%' . $this->buscar . '%')  // Filtra pela coluna nota_fiscal
+                ->orWhere('contrato', 'like', '%' . $this->buscar . '%') // Filtra pela coluna contrato
+                ->orWhere('cheque', 'like', '%' . $this->buscar . '%') // Filtra pela coluna cheque
+                ->orWhere('parcela', 'like', '%' . $this->buscar . '%') // Filtra pela coluna parcela
+                ->orWhere('responsavel', 'like', '%' . $this->buscar . '%') // Filtra pela coluna responsável
+                ->orWhere('valor', 'like', '%' . $this->buscar . '%'); // Filtra pela coluna valor
+        });
+
+        // Executa a consulta e armazena os resultados
+        $this->listaPagamentos = $query->get();
     }
 
     public function listPayments()
@@ -139,8 +164,14 @@ class Dashboard extends Component
     #[On('updateRender')] // Define que a função 'render' será atualizada após o evento 'updateRender'
     public function render()
     {
-        // Atualiza a lista de pagamentos
-        $this->listPayments();
+        // Verifica se o campo de busca está vazio
+        if (!empty($this->buscar)) {
+            // Se houver busca, utiliza o método de busca (updatedBuscar)
+            $this->updatedBuscar();
+        } else {
+            // Se não houver busca, carrega a lista geral de pagamentos
+            $this->listPayments();
+        }
 
         // Atualiza a lista de fornecedores
         $this->selectSuppliers();
@@ -148,7 +179,7 @@ class Dashboard extends Component
         // Atualiza a lista de anos e meses disponíveis
         $this->selectPeriod();
 
-        // Renderiza a visão 'dashboard' no Livewire
+        // Renderiza a visão 'dashboard'
         return view('livewire.dashboard');
     }
 }
