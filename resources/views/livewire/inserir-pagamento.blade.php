@@ -1,11 +1,11 @@
-    <div class="relative p-4 w-full max-w-2xl max-h-full">
+    <div class="relative p-4 w-full max-w-lg max-h-full">
         <!-- Imagem de Loading -->
         <img wire:loading src="{{ asset('/images/loading.gif') }}" class="w-40 fixed inset-0 mx-auto my-auto z-50"
             alt="Loading">
         <!-- Modal content -->
         <div class="relative bg-white rounded-lg shadow">
             <!-- Modal header -->
-            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
+            <div class="flex items-center justify-between p-4 border-b rounded-t">
                 <p class="text-lg font-semibold text-gray-900">
                     Inserir Pagamento
                 </p>
@@ -59,7 +59,7 @@
                     @endphp
 
                     <div class="col-span-1">
-                        <label for="contrato" class="block mb-2 text-sm font-medium text-gray-900">Número do
+                        <label for="contrato" class="block mb-2 text-sm font-medium text-gray-900">N˚ do
                             Contrato</label>
                         <input type="text" name="contrato" id="contrato" wire:model.defer="contrato"
                             {{ $isContract ? 'disabled' : '' }}
@@ -81,7 +81,7 @@
                         <div class="col-span-1">
                             <label for="nota_fiscal.{{ $index }}"
                                 class="block mb-2 text-sm font-medium text-gray-900">
-                                Nota Fiscal ({{ $index + 1 }}ª Parcela)
+                                N.F ({{ $index + 1 }}ª Parcela)
                             </label>
                             <input type="text" name="nota_fiscal.{{ $index }}"
                                 id="nota_fiscal.{{ $index }}" wire:model.defer="nota_fiscal.{{ $index }}"
@@ -104,7 +104,7 @@
                         <div class="col-span-1">
                             <label for="vencimento.{{ $index }}"
                                 class="block mb-2 text-sm font-medium text-gray-900">
-                                Vencimento ({{ $index + 1 }}ª Parcela)
+                                Venc. ({{ $index + 1 }}ª Parcela)
                             </label>
                             <input type="date" name="vencimento.{{ $index }}"
                                 id="vencimento.{{ $index }}"

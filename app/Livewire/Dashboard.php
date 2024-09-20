@@ -77,19 +77,29 @@ class Dashboard extends Component
 
     public function updatedBuscar()
     {
+        // Inicia o valor convertido como o próprio valor buscado
+        $valorConvertido = $this->buscar;
+
+        // Verifica se o valor contém um formato numérico brasileiro (ex: 5.000,00)
+        if (preg_match('/^[0-9]{1,3}(\.[0-9]{3})*,[0-9]{2}$/', $this->buscar)) {
+            // Remove os pontos de milhar e substitui a vírgula decimal por ponto
+            $valorConvertido = str_replace('.', '', $this->buscar);  // Remove pontos de milhar
+            $valorConvertido = str_replace(',', '.', $valorConvertido);  // Substitui a vírgula por ponto
+        }
+
         // Inicia a consulta diretamente no modelo de Pagamento
         $query = Pagamento::with('fornecedor')
             ->orderBy('vencimento', 'asc')
             ->orderBy('parcela', 'asc');
 
         // Aplica os filtros de busca nas colunas
-        $query->where(function ($q) {
+        $query->where(function ($q) use ($valorConvertido) {
             $q->where('nota_fiscal', 'like', '%' . $this->buscar . '%')  // Filtra pela coluna nota_fiscal
                 ->orWhere('contrato', 'like', '%' . $this->buscar . '%') // Filtra pela coluna contrato
                 ->orWhere('cheque', 'like', '%' . $this->buscar . '%') // Filtra pela coluna cheque
                 ->orWhere('parcela', 'like', '%' . $this->buscar . '%') // Filtra pela coluna parcela
                 ->orWhere('responsavel', 'like', '%' . $this->buscar . '%') // Filtra pela coluna responsável
-                ->orWhere('valor', 'like', '%' . $this->buscar . '%'); // Filtra pela coluna valor
+                ->orWhere('valor', 'like', '%' . $valorConvertido . '%'); // Filtra pela coluna valor usando o valor convertido
         });
 
         // Executa a consulta e armazena os resultados

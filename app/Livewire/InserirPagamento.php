@@ -24,7 +24,7 @@ class InserirPagamento extends Component
         'vencimento.*' => 'required|date',  // Valida cada vencimento como uma data
         'parcela' => 'required|integer|min:1|max:5',  // Campo obrigatório para a quantidade de parcelas
         'nota_fiscal.*' => 'nullable',  // Valida que cada nota fiscal seja preenchida
-        'valor.*' => 'required|numeric|min:0',  // Valida que cada valor seja preenchido e seja um número
+        'valor.*' => 'required',  // Valida que cada valor seja preenchido
         'contrato' => 'nullable',  // O contrato é opcional
         // 'data_pagamento' => 'nullable|date',
         // 'data_manutencao' => 'nullable|date',
