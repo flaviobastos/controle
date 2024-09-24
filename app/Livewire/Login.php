@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\Log;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
@@ -10,6 +11,8 @@ class Login extends Component
 {
     public $email;  // Armazena o e-mail inserido pelo usuário
     public $password;  // Armazena a senha inserida pelo usuário
+    public $emailUsuario; // Armazena o login do usuario
+    public $ipUsuario; // Armazena o IP do usuario
 
     protected array $rules = [
         // Validações para o campo e-mail: obrigatório, deve ser um e-mail válido, mínimo de 5 e máximo de 30 caracteres
@@ -18,6 +21,14 @@ class Login extends Component
         // Validações para o campo senha: obrigatório, mínimo de 5 e máximo de 20 caracteres
         'password' => 'required|min:5|max:20',
     ];
+
+    public function userMail()
+    {
+        if (Auth::check()) {
+            $this->emailUsuario = Auth::user()->email; // Acessa o e-mail do usuário logado
+            $this->ipUsuario = request()->ip();  // Adiciona o IP do usuário ao log
+        }
+    }
 
     protected array $messages = [
         // Mensagem de erro quando o e-mail é obrigatório
@@ -49,13 +60,22 @@ class Login extends Component
             // Se a autenticação for bem-sucedida, regenera a sessão para evitar ataques de fixação de sessão
             session()->regenerate();
 
+            $this->userMail(); // Obter o e-mail do usuário logado para log
+
+            // Grava uma mensagem de sucesso no log
+            Log::create([
+                'usuario' => $this->emailUsuario,
+                'ip' => $this->ipUsuario,  // Adiciona o IP do usuário ao log
+                'mensagem' => 'Logado no sistema com sucesso',
+            ]);
+
             // Redireciona o usuário para o dashboard após o login bem-sucedido
             return redirect()->route('dashboard');
         }
 
         // Se a autenticação falhar, dispara um evento de falha no login
         $this->dispatch('loginFailed');
-        //return redirect()->route('login');  // Opcional: Pode redirecionar novamente para a página de login
+        $this->password = '';  // Limpa a senha para evitar que ela permaneça no campo
     }
 
     #[Layout('components.layouts.login-layout')]  // Define o layout usado para a página de login

@@ -3,7 +3,9 @@
 namespace App\Livewire;
 
 use App\Models\Fornecedor;
+use App\Models\Log;
 use App\Models\Pagamento;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -18,6 +20,8 @@ class InserirPagamento extends Component
     public $parcela = 1; // Campo do formulário
     public $valor = []; // Campo do formulário
     public $nota_fiscal = []; // Campo do formulário
+    public $emailUsuario;
+    public $ipUsuario;
 
     protected $rules = [
         'responsavel' => 'required',  // Campo obrigatório para o responsável
@@ -29,6 +33,14 @@ class InserirPagamento extends Component
         // 'data_pagamento' => 'nullable|date',
         // 'data_manutencao' => 'nullable|date',
     ];
+
+    public function userMail()
+    {
+        if (Auth::check()) {
+            $this->emailUsuario = Auth::user()->email; // Acessa o e-mail do usuário logado
+            $this->ipUsuario = request()->ip();  // Adiciona o IP do usuário ao log
+        }
+    }
 
     public function updatedParcela($qtdParcelas) // Chamado ao atualizar a quantidade de parcelas
     {
@@ -111,6 +123,13 @@ class InserirPagamento extends Component
             // Notifica o sucesso da operação
             $this->dispatchNotification('success');
 
+            // Grava uma mensagem de sucesso no log
+            Log::create([
+                'usuario' => $this->emailUsuario,
+                'ip' => $this->ipUsuario,  // Adiciona o IP do usuário ao log
+                'mensagem' => 'Pagamento inserido com sucesso',
+            ]);
+
             // Limpa os campos do formulário
             $this->clear();
         } catch (\Throwable $e) {
@@ -154,6 +173,8 @@ class InserirPagamento extends Component
 
         // Inicializa os campos, garantindo que existam valores para 'valor' e 'nota_fiscal'
         $this->mount();
+
+        $this->userMail(); // Obter o e-mail do usuário logado para log
 
         // Renderiza a view do componente de inserir pagamento
         return view('livewire.inserir-pagamento');

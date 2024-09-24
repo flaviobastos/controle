@@ -3,6 +3,8 @@
 namespace App\Livewire;
 
 use App\Models\Fornecedor;
+use App\Models\Log;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
 class InserirFornecedor extends Component
@@ -13,12 +15,22 @@ class InserirFornecedor extends Component
     public $fornecedor;  // input text
     public $objeto;  // input text
     public $cnpj;  // input text
+    public $emailUsuario;
+    public $ipUsuario;
 
     protected $rules = [
         'fornecedor' => 'required|string|max:50',  // Valida que o campo fornecedor é obrigatório, uma string e com no máximo 50 caracteres
         'objeto' => 'required|string|max:200',  // Valida que o campo objeto é obrigatório, uma string e com no máximo 200 caracteres
         'cnpj' => 'required|string|max:18',  // Valida que o campo CNPJ é obrigatório, uma string e com no máximo 18 caracteres
     ];
+
+    public function userMail()
+    {
+        if (Auth::check()) {
+            $this->emailUsuario = Auth::user()->email; // Acessa o e-mail do usuário logado
+            $this->ipUsuario = request()->ip();  // Adiciona o IP do usuário ao log
+        }
+    }
 
     public function clear() // Limpa os campos de cadastro
     {
@@ -103,6 +115,13 @@ class InserirFornecedor extends Component
         // Cria o fornecedor com os dados validados e notifica o resultado
         if (Fornecedor::create($validated)) {
             $this->dispatchNotification('success');  // Notifica sucesso
+
+            // Grava uma mensagem de sucesso no log
+            Log::create([
+                'usuario' => $this->emailUsuario,
+                'ip' => $this->ipUsuario,  // Adiciona o IP do usuário ao log
+                'mensagem' => 'Fornecedor criado com sucesso',
+            ]);
         } else {
             $this->dispatchNotification('error');  // Notifica erro
         }
@@ -125,6 +144,13 @@ class InserirFornecedor extends Component
             // Atualiza o fornecedor com os dados validados e notifica o resultado
             $fornecedor->update($validated);
             $this->dispatchNotification('success');  // Notifica sucesso
+
+            // Grava uma mensagem de sucesso no log
+            Log::create([
+                'usuario' => $this->emailUsuario,
+                'ip' => $this->ipUsuario,  // Adiciona o IP do usuário ao log
+                'mensagem' => 'Fornecedor atualizado com sucesso',
+            ]);
         } else {
             $this->dispatchNotification('error');  // Notifica erro
         }
@@ -133,12 +159,20 @@ class InserirFornecedor extends Component
 
     public function supplierDelete() // Deleta o fornecedor
     {
+
         // Deleta o fornecedor pelo ID e notifica o resultado
         $supplierDeleted = Fornecedor::destroy($this->id_fornecedor);
 
         if ($supplierDeleted) {
             // Se o fornecedor for deletado com sucesso, notifica sucesso
             $this->dispatchNotification('success');
+
+            // Grava uma mensagem de sucesso no log
+            Log::create([
+                'usuario' => $this->emailUsuario,
+                'ip' => $this->ipUsuario,  // Adiciona o IP do usuário ao log
+                'mensagem' => 'Fornecedor excluído com sucesso',
+            ]);
         } else {
             // Se falhar, notifica erro
             $this->dispatchNotification('error');
@@ -148,7 +182,10 @@ class InserirFornecedor extends Component
 
     public function render() // Renderiza a página
     {
-        $this->listSuppliers();  // Carrega a lista de fornecedores
+        $this->listSuppliers(); // Carrega a lista de fornecedores
+
+        $this->userMail(); // Obter o e-mail do usuário logado para log
+
         return view('livewire.inserir-fornecedor');  // Renderiza a view 'inserir-fornecedor'
     }
 }

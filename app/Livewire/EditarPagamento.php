@@ -2,7 +2,9 @@
 
 namespace App\Livewire;
 
+use App\Models\Log;
 use App\Models\Pagamento;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -18,6 +20,8 @@ class EditarPagamento extends Component
     public $data_pagamento;
     public $data_manutencao;
     public $status_manutencao;
+    public $emailUsuario;
+    public $ipUsuario;
 
     protected $rules = [
         'responsavel' => 'required',  // Campo obrigatório para o responsável
@@ -30,6 +34,14 @@ class EditarPagamento extends Component
         'data_manutencao' => 'nullable|date',  // Campo opcional para data de manutenção, deve ser uma data válida
         'status_manutencao' => 'boolean',  // Campo booleano para status de manutenção
     ];
+
+    public function userMail()
+    {
+        if (Auth::check()) {
+            $this->emailUsuario = Auth::user()->email; // Acessa o e-mail do usuário logado
+            $this->ipUsuario = request()->ip();  // Adiciona o IP do usuário ao log
+        }
+    }
 
     #[On('editPaymentById')] // Pega o $id_editarPagamento enviado pelo dashboard
     public function editPaymentById($id_editarPagamento)
@@ -75,6 +87,13 @@ class EditarPagamento extends Component
             // Notifica o sucesso da operação
             $this->dispatchNotification('success');
 
+            // Grava uma mensagem de sucesso no log
+            Log::create([
+                'usuario' => $this->emailUsuario,
+                'ip' => $this->ipUsuario,  // Adiciona o IP do usuário ao log
+                'mensagem' => 'Pagamento editado com sucesso',
+            ]);
+
             // Fecha a janela e limpa os campos do formulário
             $this->closeWindow();
         } catch (\Throwable $e) {
@@ -109,6 +128,13 @@ class EditarPagamento extends Component
         // Verifica se o pagamento foi deletado com sucesso e notifica o resultado
         if ($paymentDeleted) {
             $this->dispatchNotification('success');
+
+            // Grava uma mensagem de sucesso no log
+            Log::create([
+                'usuario' => $this->emailUsuario,
+                'ip' => $this->ipUsuario,  // Adiciona o IP do usuário ao log
+                'mensagem' => 'Pagamento excluído com sucesso',
+            ]);
         } else {
             $this->dispatchNotification('error');
         }
@@ -145,6 +171,8 @@ class EditarPagamento extends Component
 
     public function render()
     {
+        $this->userMail(); // Obter o e-mail do usuário logado para log
+
         // Renderiza a view 'editar-pagamento'
         return view('livewire.editar-pagamento');
     }
