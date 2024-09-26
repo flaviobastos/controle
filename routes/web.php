@@ -13,3 +13,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
     Route::get('/log', ExibirLog::class)->name('log');
 });
+
+Route::fallback(function () {
+    return redirect('/');
+});

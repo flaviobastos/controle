@@ -14,9 +14,10 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@user',
-            'password' => 'test@user',
+            'name' => env('USER_NAME', 'Default Name'),
+            'email' => env('USER_EMAIL', 'default@user'),
+            'password' => env('USER_PASSWORD', 'default_password'),
+            'is_admin' => true, // Define como administrador
         ]);
     }
 }
