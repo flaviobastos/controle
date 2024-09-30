@@ -41,7 +41,7 @@
                             Descrição do Material/Serviço</label>
                         <textarea name="responsavel" id="responsavel" wire:model.defer="responsavel" rows="4" style="resize:none"
                             class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 uppercase"
-                            placeholder="Responsável e descrição do serviço ou material" required="" maxlength="255"></textarea>
+                            placeholder="Responsável e descrição do serviço ou material" required="" maxlength="155"></textarea>
                     </div>
 
                     <div class="col-span-1">

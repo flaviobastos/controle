@@ -37,11 +37,16 @@
                         </select>
                     </div>
 
+                    @php
+                        $isCNPJ = empty($this->cnpj);
+                    @endphp
+
                     <div class="col-span-2">
                         <label for="cnpj" class="block mb-2 text-sm font-medium text-gray-900">CNPJ do
                             Fornecedor</label>
                         <input type="text" name="cnpj" id="cnpj" wire:model.defer="cnpj"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm text-center rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                            {{ $isCNPJ ? '' : 'disabled' }}
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm text-center rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 {{ $isCNPJ ? '' : 'opacity-50 cursor-not-allowed' }}"
                             placeholder="00.000.000/0000-00" required="" maxlength="18" x-mask="99.999.999/9999-99">
                     </div>
 

@@ -314,8 +314,12 @@
                                 <td class="text-center border">
                                     {{ $pagamento->parcela }}
                                 </td>
-                                <td class="px-2 text-center border uppercase">
-                                    {{ substr($pagamento->responsavel, 0, 50) }}
+                                <td class="px-2 text-center border uppercase cursor-pointer group relative">
+                                    <span>{{ substr($pagamento->responsavel, 0, 30) }}...</span>
+                                    <div
+                                        class="hidden group-hover:flex absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-gray-700 text-white text-sm rounded py-1 px-2 w-auto">
+                                        {{ $pagamento->responsavel }}
+                                    </div>
                                 </td>
                                 <td class="border">
                                     <div class="flex flex-row items-center justify-center w-full h-full">
