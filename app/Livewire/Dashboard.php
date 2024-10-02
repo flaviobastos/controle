@@ -3,8 +3,11 @@
 namespace App\Livewire;
 
 use App\Models\Fornecedor;
+use App\Models\Log;
 use App\Models\Pagamento;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -22,6 +25,21 @@ class Dashboard extends Component
     public $mesesDisponiveis = [];
     public $filtroContrato = false; // Variável para controlar o estado do checkbox
     public $filtro = 'todos'; // Radio "Todos" selecionado por padrão
+    public $new_password;
+    public $emailUsuario;
+    public $ipUsuario;
+
+    protected $rules = [
+        'new_password' => 'required|min:6',
+    ];
+
+    protected function messages()
+    {
+        return [
+            'new_password.required' => 'A senha é obrigatória.',
+            'new_password.min' => 'A senha deve ter pelo menos 6 caracteres.',
+        ];
+    }
 
     public function logout()
     {
@@ -39,6 +57,20 @@ class Dashboard extends Component
 
         // Chama a listagem de pagamentos inicialmente
         $this->listPayments();
+    }
+
+    public function dispatchNotification($type) // Emite mensagens de notificação
+    {
+        // Dispara o evento de notificação com o tipo fornecido (por exemplo, 'success' ou 'error')
+        $this->dispatch($type);
+    }
+
+    public function userMail() // Obter o e-mail do usuário logado para log
+    {
+        if (Auth::check()) {
+            $this->emailUsuario = Auth::user()->email; // Acessa o e-mail do usuário logado
+            $this->ipUsuario = request()->ip();  // Adiciona o IP do usuário ao log
+        }
     }
 
     public function clear() // Limpa os campos de pesquisa e estado do componente
@@ -97,13 +129,38 @@ class Dashboard extends Component
             $q->where('nota_fiscal', 'like', '%' . $this->buscar . '%')  // Filtra pela coluna nota_fiscal
                 ->orWhere('contrato', 'like', '%' . $this->buscar . '%') // Filtra pela coluna contrato
                 ->orWhere('cheque', 'like', '%' . $this->buscar . '%') // Filtra pela coluna cheque
-                ->orWhere('parcela', 'like', '%' . $this->buscar . '%') // Filtra pela coluna parcela
                 ->orWhere('responsavel', 'like', '%' . $this->buscar . '%') // Filtra pela coluna responsável
                 ->orWhere('valor', 'like', '%' . $valorConvertido . '%'); // Filtra pela coluna valor usando o valor convertido
         });
 
         // Executa a consulta e armazena os resultados
         $this->listaPagamentos = $query->get();
+    }
+
+    public function changePassword()
+    {
+        // Valida os dados
+        $this->validate();
+
+        // Verifica se uma nova senha foi fornecida
+        if ($this->new_password) {
+            // Atualiza a senha do usuário logado usando User::where com o método update
+            User::where('id', Auth::user()->id)->update([
+                'password' => Hash::make($this->new_password),
+            ]);
+        }
+        // Exibe uma notificação de sucesso informando que a senha foi alterada
+        $this->dispatchNotification('success');
+
+        // Grava um log da alteração da senha
+        Log::create([
+            'usuario' => $this->emailUsuario,
+            'ip' => $this->ipUsuario,  // Adiciona o IP do usuário ao log
+            'mensagem' => 'Senha atualizada com sucesso',
+        ]);
+
+        // Limpa os campos do formulário (por exemplo, o campo de senha)
+        $this->clear();
     }
 
     public function listPayments()
@@ -188,6 +245,8 @@ class Dashboard extends Component
 
         // Atualiza a lista de anos e meses disponíveis
         $this->selectPeriod();
+
+        $this->userMail(); // Obter o e-mail do usuário logado para log
 
         // Renderiza a visão 'dashboard'
         return view('livewire.dashboard');

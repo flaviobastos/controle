@@ -6,28 +6,16 @@
 
     {{-- Menu Superior  --}}
 
-    <section class="bg-slate-800 flex flex-row items-center justify-between p-2 overflow-x-auto">
-
-        <button wire:click="logout"
-            onclick="this.disabled = true; this.style.backgroundColor = '#515A5A'; this.style.cursor='wait'; setTimeout(() => this.disabled = false, 5000)"
-            class="inline-flex items-center px-5 py-2 mx-2 rounded-3xl bg-slate-800 text-white hover:bg-slate-700 duration-500">
-            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#FFFFFF" viewBox="0 0 256 256"
-                class="lg:mr-2">
-                <path
-                    d="M120,216a8,8,0,0,1-8,8H48a8,8,0,0,1-8-8V40a8,8,0,0,1,8-8h64a8,8,0,0,1,0,16H56V208h56A8,8,0,0,1,120,216Zm109.66-93.66-40-40a8,8,0,0,0-11.32,11.32L204.69,120H112a8,8,0,0,0,0,16h92.69l-26.35,26.34a8,8,0,0,0,11.32,11.32l40-40A8,8,0,0,0,229.66,122.34Z">
-                </path>
-            </svg>
-            <span class="hidden lg:inline-block">Logout</span>
-        </button>
+    <section class="bg-slate-800 flex flex-row items-center justify-end p-2 overflow-x-auto">
 
         <div class="flex flex-row items-center justify-center">
 
             {{-- Botão Inserir Contratos --}}
 
             <button x-on:click="inserirFornecedor = true"
-                class="inline-flex items-center px-5 py-2 mx-2 rounded-3xl bg-slate-800 text-white hover:bg-slate-700 duration-500">
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#ffffff"
-                    viewBox="0 0 256 256" class="lg:mr-2">
+                class="inline-flex items-center px-5 py-2 mx-2 rounded-3xl bg-slate-800 text-white hover:bg-slate-700 duration-500 border">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#ffffff" viewBox="0 0 256 256"
+                    class="lg:mr-2">
                     <path
                         d="M216,72H131.31L104,44.69A15.86,15.86,0,0,0,92.69,40H40A16,16,0,0,0,24,56V200.62A15.4,15.4,0,0,0,39.38,216H216.89A15.13,15.13,0,0,0,232,200.89V88A16,16,0,0,0,216,72ZM92.69,56l16,16H40V56ZM216,200H40V88H216Zm-88-88a8,8,0,0,1,8,8v16h16a8,8,0,0,1,0,16H136v16a8,8,0,0,1-16,0V152H104a8,8,0,0,1,0-16h16V120A8,8,0,0,1,128,112Z">
                     </path>
@@ -38,7 +26,7 @@
             {{-- Botão Inserir Pagamento --}}
 
             <button x-on:click="inserirPagamento = true"
-                class="inline-flex items-center px-5 py-2 mx-2 rounded-3xl bg-slate-800 text-white hover:bg-slate-700 duration-500">
+                class="inline-flex items-center px-5 py-2 mx-2 rounded-3xl bg-slate-800 text-white hover:bg-slate-700 duration-500 border">
                 <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#ffffff"
                     viewBox="0 0 256 256" class="lg:mr-2">
                     <path
@@ -86,8 +74,8 @@
     <section>
 
         <div class="px-5 my-5">
-            <div class="shadow-lg overflow-x-auto text-nowrap">
-                <table class="table-auto text-sm w-full h-full font-light text-left text-gray-600">
+            <div class="shadow-lg overflow-x-auto overflow-y-hidden text-nowrap">
+                <table class="table-auto text-sm w-full h-full font-light text-left text-gray-600 z-10">
                     <thead
                         class="text-xs tracking-wider text-gray-700 uppercase bg-gradient-to-b from-gray-50 to-gray-200 text-center h-14">
                         <tr>
@@ -314,10 +302,10 @@
                                 <td class="text-center border">
                                     {{ $pagamento->parcela }}
                                 </td>
-                                <td class="px-2 text-center border uppercase cursor-pointer group relative">
+                                <td class="relative px-2 text-center border uppercase cursor-pointer group">
                                     <span>{{ substr($pagamento->responsavel, 0, 30) }}...</span>
                                     <div
-                                        class="hidden group-hover:flex absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-gray-700 text-white text-sm rounded py-1 px-2 w-auto">
+                                        class="hidden group-hover:flex absolute top-1/4 left-1/4 transform -translate-x-1/2 -translate-y-full z-50 bg-gray-700 text-white text-sm rounded py-1 px-2 w-fit h-auto text-wrap text-justify">
                                         {{ $pagamento->responsavel }}
                                     </div>
                                 </td>
@@ -364,8 +352,73 @@
                 encontrado.</p>
         @endif
 
-        <div class="flex flex-row items-center justify-end absolute bottom-0 w-full text-sm my-4 px-4">
-            <p>{{ date('d/m/Y H:i:s', strtotime(now())) }} - {{ Auth::user()->email }}</p>
+        <div x-data="{ user: false }">
+
+            <div class="flex flex-row items-center justify-between absolute bottom-0 w-full text-sm my-2 px-2">
+                <p>{{ date('d/m/Y H:i:s', strtotime(now())) }}</p>
+                <button @click="user = !user"
+                    class="border border-gray-600 px-2 py-2 text-sm inline-flex items-center justify-center text-center hover:bg-gray-300 duration-500 uppercase rounded-xl">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#000000"
+                        viewBox="0 0 256 256">
+                        <path
+                            d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24ZM74.08,197.5a64,64,0,0,1,107.84,0,87.83,87.83,0,0,1-107.84,0ZM96,120a32,32,0,1,1,32,32A32,32,0,0,1,96,120Zm97.76,66.41a79.66,79.66,0,0,0-36.06-28.75,48,48,0,1,0-59.4,0,79.66,79.66,0,0,0-36.06,28.75,88,88,0,1,1,131.52,0Z">
+                        </path>
+                    </svg>
+                    <p class="mx-2"> {{ Auth::user()->name }}</p>
+                </button>
+            </div>
+
+            <div x-show="user" @click.outside="user = false"
+                class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 w-80 p-4 bg-white border border-gray-300 rounded shadow-lg shadow-gray-500 font-light">
+
+                <form class="flex flex-col items-center justify-center">
+
+                    <p class="uppercase text-sm">{{ Auth::user()->name }}</p>
+                    <p class="uppercase mb-4 text-sm">{{ Auth::user()->email }}</p>
+
+                    <button wire:click="logout"
+                        onclick="this.disabled = true; this.style.backgroundColor = '#515A5A'; this.style.cursor='wait'; setTimeout(() => this.disabled = false, 5000)"
+                        class="w-full bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-white py-2 px-5 mx-2 rounded-lg inline-flex items-center justify-center duration-500 border">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#FFFFFF"
+                            viewBox="0 0 256 256" class="mr-2">
+                            <path
+                                d="M120,216a8,8,0,0,1-8,8H48a8,8,0,0,1-8-8V40a8,8,0,0,1,8-8h64a8,8,0,0,1,0,16H56V208h56A8,8,0,0,1,120,216Zm109.66-93.66-40-40a8,8,0,0,0-11.32,11.32L204.69,120H112a8,8,0,0,0,0,16h92.69l-26.35,26.34a8,8,0,0,0,11.32,11.32l40-40A8,8,0,0,0,229.66,122.34Z">
+                            </path>
+                        </svg>
+                        <span class="hidden lg:inline-block uppercase">Sair do Sistema</span>
+                    </button>
+
+                    <hr class="w-full h-0.5 mx-auto my-4 bg-gray-200 border-0 rounded">
+
+                    <!-- Nova senha -->
+
+                    <label for="new_password" class="block text-gray-700 font-medium mb-2">Nova Senha:</label>
+                    <input wire:model.defer="new_password" type="password" id="new_password" name="new_password"
+                        maxlength="8" placeholder="Digite uma senha"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mb-2 text-center"
+                        required>
+
+                    <!-- Botão para alterar senha -->
+                    <button wire:click="changePassword"
+                        onclick="this.disabled = true; this.style.backgroundColor = '#515A5A'; this.style.cursor='wait'; setTimeout(() => this.disabled = false, 5000)"
+                        class="w-full bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-white py-2 px-5 mx-2 rounded-lg inline-flex items-center justify-center duration-500 border">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#FFFFFF"
+                            viewBox="0 0 256 256" class="mr-2">
+                            <path
+                                d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z">
+                            </path>
+                        </svg>
+                        <span class="hidden lg:inline-block uppercase">Alterar Senha</span>
+                    </button>
+
+                    @error('new_password')
+                        <span class="text-red-500 text-sm">{{ $message }}</span>
+                    @enderror
+
+                </form>
+
+            </div>
+
         </div>
 
     </section>
