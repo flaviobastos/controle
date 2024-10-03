@@ -73,40 +73,40 @@
 
     <section>
 
-        <div class="px-5 my-5">
-            <div class="shadow-lg overflow-x-auto overflow-y-hidden text-nowrap">
+        <div class="flex px-5 my-5 items-center justify-center">
+            <div class="w-full overflow-x-auto overflow-y-hidden text-nowrap shadow-lg">
                 <table class="table-auto text-sm w-full h-full font-light text-left text-gray-600 z-10">
                     <thead
                         class="text-xs tracking-wider text-gray-700 uppercase bg-gradient-to-b from-gray-50 to-gray-200 text-center h-14">
                         <tr>
-                            <th scope="col" class="w-36 px-6 border border-gray-400">
+                            <th scope="col" class="px-6 border border-gray-400">
                                 Vencimento
                             </th>
-                            <th scope="col" class="w-32 px-6 border border-gray-400">
+                            <th scope="col" class="px-6 border border-gray-400">
                                 Data do Pgto
                             </th>
-                            <th scope="col" class="w-32 px-2 border border-gray-400">
+                            <th scope="col" class="px-2 border border-gray-400">
                                 Contrato
                             </th>
                             <th scope="col" class="px-2 border border-gray-400">
                                 Fornecedor
                             </th>
-                            <th scope="col" class="w-32 px-6 border border-gray-400">
+                            <th scope="col" class="px-6 border border-gray-400">
                                 Cheque
                             </th>
-                            <th scope="col" class="w-32 px-6 border border-gray-400">
+                            <th scope="col" class="px-6 border border-gray-400">
                                 Nota Fiscal
                             </th>
-                            <th scope="col" class="w-32 px-2 border border-gray-400">
+                            <th scope="col" class="px-2 border border-gray-400">
                                 Parcela
                             </th>
                             <th scope="col" class="px-2 border border-gray-400">
                                 Responsável / Descrição (Obra ou Serviço)
                             </th>
-                            <th scope="col" class="w-32 px-6 border border-gray-400">
+                            <th scope="col" class="px-6 border border-gray-400">
                                 Data Manut.
                             </th>
-                            <th scope="col" class="w-32 px-6 border border-gray-400">
+                            <th scope="col" class="px-6 border border-gray-400">
                                 Valor (R$)
                             </th>
                             <th scope="col"
@@ -302,8 +302,8 @@
                                 <td class="text-center border">
                                     {{ $pagamento->parcela }}
                                 </td>
-                                <td class="relative px-2 text-center border uppercase cursor-pointer group">
-                                    <span>{{ substr($pagamento->responsavel, 0, 30) }}...</span>
+                                <td class="max-w-96 relative px-2 text-center border uppercase cursor-pointer group">
+                                    <div class="truncate">{{ $pagamento->responsavel }}</div>
                                     <div
                                         class="hidden group-hover:flex absolute top-1/4 left-1/4 transform -translate-x-1/2 -translate-y-full z-50 bg-gray-700 text-white text-sm rounded py-1 px-2 w-fit h-auto text-wrap text-justify">
                                         {{ $pagamento->responsavel }}
@@ -425,7 +425,8 @@
 
     <div x-show="inserirFornecedor" x-cloak>
         <div class="fixed z-50 inset-0 overflow-x-hidden overflow-y-hidden">
-            <div class="flex flex-col items-center justify-center h-screen w-full bg-slate-700 bg-opacity-90">
+            <div
+                class="flex flex-col items-center justify-center h-screen w-full bg-slate-700 bg-opacity-90 overflow-y-auto">
                 @livewire('inserir-fornecedor')
             </div>
         </div>
@@ -442,7 +443,8 @@
 
     <div x-show="editarPagamento" x-cloak>
         <div class="fixed z-50 inset-0 overflow-x-hidden overflow-y-hidden">
-            <div class="flex flex-col items-center justify-center h-screen w-full bg-slate-700 bg-opacity-90">
+            <div
+                class="flex flex-col items-center justify-center h-screen w-full bg-slate-700 bg-opacity-90 overflow-y-auto">
                 @livewire('editar-pagamento')
             </div>
         </div>
