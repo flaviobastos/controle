@@ -145,56 +145,54 @@
 
     </section>
 
-    <section class="flex flex-col items-center justify-center w-full print:mt-0 mt-16 p-4">
-        <div class="w-full">
+    <section class="flex flex-col items-center justify-center w-full print:mt-0 mt-16 p-0 text-nowrap">
+        <div class="w-full max-h-[calc(100vh-4rem)] overflow-y-auto">
             <table
                 class="table-auto border-collapse min-w-full text-sm w-full font-light text-left text-gray-600 shadow-lg">
                 <thead
-                    class="text-xs tracking-wider text-gray-700 uppercase bg-gradient-to-b from-gray-50 to-gray-200 text-center h-14">
+                    class="text-xs text-gray-800 uppercase bg-gradient-to-b from-gray-50 to-gray-300 text-center h-14 sticky top-0 z-10 will-change-transform">
                     <tr>
-                        <th scope="col" class="border border-gray-400 print:border-black px-2">
+                        <th scope="col" class="border print:border-black px-2">
                             Vencimento
                         </th>
-                        <th scope="col" class="border border-gray-400 print:border-black px-2 ">
-                            Data do Pgto
+                        <th scope="col" class="border print:border-black px-2 ">
+                            Status Pgto
                         </th>
-                        <th scope="col" class="border border-gray-400 print:border-black px-2">
+                        <th scope="col" class="border print:border-black px-2">
                             Contrato
                         </th>
-                        <th scope="col" class="border border-gray-400 print:border-black px-2">
+                        <th scope="col" class="border print:border-black px-2">
                             Fornecedor
                         </th>
-                        <th scope="col" class="border border-gray-400 print:border-black px-2">
+                        <th scope="col" class="border print:border-black px-2">
                             Cheque
                         </th>
-                        <th scope="col" class="border border-gray-400 print:border-black px-2">
+                        <th scope="col" class="border print:border-black px-2">
                             Nota Fiscal
                         </th>
-                        <th scope="col" class="border border-gray-400 print:border-black px-2">
+                        <th scope="col" class="border print:border-black px-2">
                             Parcela
                         </th>
-                        <th scope="col" class="border border-gray-400 print:border-black px-2">
-                            Responsável / Descrição (Obra ou Serviço)
+                        <th scope="col" class="border print:border-black px-2">
+                            Responsável / Descrição
                         </th>
-                        <th scope="col" class="border border-gray-400 print:border-black px-2">
+                        <th scope="col" class="border print:border-black px-2">
                             Data Manut.
                         </th>
-                        <th scope="col" class="border border-gray-400 print:border-black px-2">
+                        <th scope="col" class="border print:border-black px-2">
                             Valor (R$)
                         </th>
                         <th scope="col"
-                            class="w-32 bg-gradient-to-b from-gray-50 to-gray-200 border border-gray-400 print:hidden">
-                            <div class="flex flex-row items-center justify-center h-14">
-                                <button @click="open = !open"
-                                    class="{{ !empty($mes) || !empty($ano) || $filtro !== 'todos' ? 'border-2 border-dashed border-slate-800 animate-pulse' : '' }} w-full h-full px-2 py-2 text-sm inline-flex items-center justify-center text-center hover:bg-gray-300 duration-500 uppercase">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                        fill="#000000" viewBox="0 0 256 256" class="mr-2">
-                                        <path
-                                            d="M32,64a8,8,0,0,1,8-8H216a8,8,0,0,1,0,16H40A8,8,0,0,1,32,64Zm8,72h72a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16Zm88,48H40a8,8,0,0,0,0,16h88a8,8,0,0,0,0-16Zm109.66,13.66a8,8,0,0,1-11.32,0L206,177.36A40,40,0,1,1,217.36,166l20.3,20.3A8,8,0,0,1,237.66,197.66ZM184,168a24,24,0,1,0-24-24A24,24,0,0,0,184,168Z">
-                                        </path>
-                                    </svg>
-                                    Filtrar
-                                </button>
+                            class="w-24 print:hidden border {{ !empty($mes) || !empty($ano) || $filtro !== 'todos' ? 'underline animate-pulse' : '' }}">
+                            <div @click="open = !open"
+                                class="flex flex-row items-center justify-center w-24 h-14 text-center cursor-pointer hover:bg-gray-300 duration-500 uppercase">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#000000"
+                                    viewBox="0 0 256 256" class="mr-2">
+                                    <path
+                                        d="M32,64a8,8,0,0,1,8-8H216a8,8,0,0,1,0,16H40A8,8,0,0,1,32,64Zm8,72h72a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16Zm88,48H40a8,8,0,0,0,0,16h88a8,8,0,0,0,0-16Zm109.66,13.66a8,8,0,0,1-11.32,0L206,177.36A40,40,0,1,1,217.36,166l20.3,20.3A8,8,0,0,1,237.66,197.66ZM184,168a24,24,0,1,0-24-24A24,24,0,0,0,184,168Z">
+                                    </path>
+                                </svg>
+                                Filtrar
                             </div>
                         </th>
                     </tr>
@@ -216,7 +214,8 @@
                                     wire:change="listPayments">
                                     <option value="" selected>Fornecedores (Todos)</option>
                                     @foreach ($seletorFornecedores as $fornecedor)
-                                        <option value="{{ $fornecedor->id }}">
+                                        <option wire:key="fornecedor-{{ $fornecedor->id }}"
+                                            value="{{ $fornecedor->id }}">
                                             {{ $fornecedor->fornecedor }}
                                         </option>
                                     @endforeach
@@ -249,7 +248,7 @@
                                         ];
                                     @endphp
                                     @foreach ($mesesDisponiveis as $mes)
-                                        <option value="{{ $mes }}">
+                                        <option wire:key="mes-{{ $mes }}" value="{{ $mes }}">
                                             {{ $nomesMeses[$mes] ?? 'Mês inválido' }}
                                         </option>
                                     @endforeach
@@ -259,7 +258,8 @@
                                 <select wire:model="ano" class="focus:outline-none px-2">
                                     <option value="">Ano</option>
                                     @foreach ($anosDisponiveis as $ano)
-                                        <option value="{{ $ano }}">{{ $ano }}
+                                        <option wire:key="ano-{{ $ano }}" value="{{ $ano }}">
+                                            {{ $ano }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -311,7 +311,7 @@
 
                 </thead>
                 @foreach ($this->listaPagamentos as $pagamento)
-                    <tbody>
+                    <tbody wire:key="pagamento-{{ $pagamento->id }}">
                         <tr class="bg-white border h-14">
                             <th scope="row" class="font-normal bg-gray-100 text-gray-900 text-center border">
                                 <div class="flex flex-row items-center justify-center px-2">
@@ -349,7 +349,7 @@
                                     @php
                                         $status =
                                             strtotime($pagamento->vencimento) <= strtotime(now())
-                                                ? 'Em Vencimento'
+                                                ? 'Vencimento'
                                                 : 'Em Aberto';
                                     @endphp
                                     <div
@@ -359,10 +359,14 @@
                                 @endif
                             </td>
                             <td class="px-2 text-center border">
-                                {{ $pagamento->contrato ?? 'Sem Contrato' }}
+                                {{ $pagamento->contrato ?? '-' }}
                             </td>
-                            <td class="px-2 text-center border uppercase max-w-40">
-                                <div class="truncate ">{{ $pagamento->fornecedor->fornecedor }}</div>
+                            <td class="max-w-40 relative text-center border uppercase cursor-pointer group">
+                                <div class="truncate px-2">{{ $pagamento->fornecedor->fornecedor }}</div>
+                                <div
+                                    class="hidden group-hover:flex absolute top-1/4 left-1/4 transform -translate-x-1/2 -translate-y-full z-40 bg-gray-700 text-white text-sm rounded py-1 px-2 w-fit h-auto text-nowrap text-center">
+                                    {{ $pagamento->fornecedor->fornecedor }}
+                                </div>
                             </td>
                             <td class="px-2 text-center border">
                                 {{ $pagamento->cheque ?? '-' }}
@@ -410,7 +414,7 @@
                                         <path
                                             d="M5.25 5.25a3 3 0 0 0-3 3v10.5a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3V13.5a.75.75 0 0 0-1.5 0v5.25a1.5 1.5 0 0 1-1.5 1.5H5.25a1.5 1.5 0 0 1-1.5-1.5V8.25a1.5 1.5 0 0 1 1.5-1.5h5.25a.75.75 0 0 0 0-1.5H5.25Z" />
                                     </svg>
-                                    Editar Pgto
+                                    Editar
                                 </button>
                             </td>
                         </tr>

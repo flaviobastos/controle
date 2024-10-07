@@ -11,7 +11,7 @@
     @vite('resources/css/app.css')
 </head>
 
-<body>
+<body class="overflow-y-hidden">
     {{ $slot }}
 </body>
 
