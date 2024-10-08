@@ -78,39 +78,60 @@
                     </div>
 
                     @foreach ($valor as $index => $valorItem)
-                        <div class="col-span-1">
-                            <label for="nota_fiscal.{{ $index }}"
-                                class="block mb-2 text-sm font-medium text-gray-900">
-                                N.F ({{ $index + 1 }}ª Parcela)
-                            </label>
-                            <input type="text" name="nota_fiscal.{{ $index }}"
-                                id="nota_fiscal.{{ $index }}" wire:model.defer="nota_fiscal.{{ $index }}"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
-                                placeholder="00000" required="" maxlength="8" x-mask="99999999">
-                        </div>
+                        <div class="col-span-3" wire:key="parcela-{{ $index }}">
 
-                        <div class="col-span-1">
-                            <label for="valor.{{ $index }}"
-                                class="block mb-2 text-sm font-medium text-gray-900">
-                                Valor ({{ $index + 1 }}ª Parcela)
-                            </label>
-                            <input type="text" name="valor.{{ $index }}" id="valor.{{ $index }}"
-                                wire:model.defer="valor.{{ $index }}"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
-                                placeholder="R$ 0,00" required="" maxlength="14"
-                                x-mask:dynamic="$money($input, ',')">
-                        </div>
+                            <fieldset class="grid gap-4 grid-cols-4 border border-gray-400 w-full p-4 text-start">
+                                <legend class="uppercase px-2"> {{ $index + 1 }}ª Parcela</legend>
 
-                        <div class="col-span-1">
-                            <label for="vencimento.{{ $index }}"
-                                class="block mb-2 text-sm font-medium text-gray-900">
-                                Venc. ({{ $index + 1 }}ª Parcela)
-                            </label>
-                            <input type="date" name="vencimento.{{ $index }}"
-                                id="vencimento.{{ $index }}"
-                                wire:model.defer="vencimento.{{ $index }}"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
-                                required="">
+                                <div class="col-span-2">
+                                    <label for="cheque.{{ $index }}"
+                                        class="block mb-2 text-sm font-medium text-gray-900">
+                                        Cheque (Opcional)
+                                    </label>
+                                    <input type="text" name="cheque.{{ $index }}"
+                                        id="cheque.{{ $index }}" wire:model.defer="cheque.{{ $index }}"
+                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
+                                        placeholder="00000" required="" maxlength="8" x-mask="99999999">
+                                </div>
+
+                                <div class="col-span-2">
+                                    <label for="nota_fiscal.{{ $index }}"
+                                        class="block mb-2 text-sm font-medium text-gray-900">
+                                        Nota Fiscal (Opcional)
+                                    </label>
+                                    <input type="text" name="nota_fiscal.{{ $index }}"
+                                        id="nota_fiscal.{{ $index }}"
+                                        wire:model.defer="nota_fiscal.{{ $index }}"
+                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
+                                        placeholder="00000" required="" maxlength="8" x-mask="99999999">
+                                </div>
+
+                                <div class="col-span-2">
+                                    <label for="valor.{{ $index }}"
+                                        class="block mb-2 text-sm font-medium text-gray-900">
+                                        Valor da Parcela (R$)
+                                    </label>
+                                    <input type="text" name="valor.{{ $index }}"
+                                        id="valor.{{ $index }}" wire:model.defer="valor.{{ $index }}"
+                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
+                                        placeholder="R$ 0,00" required="" maxlength="14"
+                                        x-mask:dynamic="$money($input, ',')">
+                                </div>
+
+                                <div class="col-span-2">
+                                    <label for="vencimento.{{ $index }}"
+                                        class="block mb-2 text-sm font-medium text-gray-900">
+                                        Vencimento do Pgto
+                                    </label>
+                                    <input type="date" name="vencimento.{{ $index }}"
+                                        id="vencimento.{{ $index }}"
+                                        wire:model.defer="vencimento.{{ $index }}"
+                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
+                                        required="">
+                                </div>
+
+                            </fieldset>
+
                         </div>
                     @endforeach
 

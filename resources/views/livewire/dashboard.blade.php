@@ -168,7 +168,7 @@
                             Cheque
                         </th>
                         <th scope="col" class="border print:border-black px-2">
-                            Nota Fiscal
+                            N. Fiscal
                         </th>
                         <th scope="col" class="border print:border-black px-2">
                             Parcela
@@ -313,7 +313,8 @@
                 @foreach ($this->listaPagamentos as $pagamento)
                     <tbody wire:key="pagamento-{{ $pagamento->id }}">
                         <tr class="bg-white border h-14">
-                            <th scope="row" class="font-normal bg-gray-100 text-gray-900 text-center border">
+                            <th scope="row"
+                                class="font-normal bg-gray-100 text-gray-900 text-center border min-w-32">
                                 <div class="flex flex-row items-center justify-center px-2">
                                     {{ date('d/m/Y', strtotime($pagamento->vencimento)) }}
                                     @if ($pagamento->data_pagamento)
@@ -340,7 +341,7 @@
                                     @endif
                                 </div>
                             </th>
-                            <td class="text-center h-14">
+                            <td class="text-center h-14 min-w-24">
                                 @if ($pagamento->data_pagamento)
                                     <div class="bg-green-200 flex flex-row items-center justify-center w-full h-full">
                                         {{ date('d/m/Y', strtotime($pagamento->data_pagamento)) }}
@@ -358,33 +359,33 @@
                                     </div>
                                 @endif
                             </td>
-                            <td class="px-2 text-center border">
+                            <td class="px-2 text-center border min-w-20">
                                 {{ $pagamento->contrato ?? '-' }}
                             </td>
-                            <td class="max-w-40 relative text-center border uppercase cursor-pointer group">
+                            <td class="max-w-44 relative text-center border uppercase cursor-pointer group">
                                 <div class="truncate px-2">{{ $pagamento->fornecedor->fornecedor }}</div>
                                 <div
                                     class="hidden group-hover:flex absolute top-1/4 left-1/4 transform -translate-x-1/2 -translate-y-full z-40 bg-gray-700 text-white text-sm rounded py-1 px-2 w-fit h-auto text-nowrap text-center">
                                     {{ $pagamento->fornecedor->fornecedor }}
                                 </div>
                             </td>
-                            <td class="px-2 text-center border">
+                            <td class="px-2 text-center border min-w-20">
                                 {{ $pagamento->cheque ?? '-' }}
                             </td>
-                            <td class="px-2 text-center border">
+                            <td class="px-2 text-center border min-w-20">
                                 {{ $pagamento->nota_fiscal ?? '-' }}
                             </td>
-                            <td class="px-2 text-center border">
+                            <td class="px-2 text-center border min-w-20">
                                 {{ $pagamento->parcela }}
                             </td>
-                            <td class="max-w-52 relative text-center border uppercase cursor-pointer group">
+                            <td class="max-w-48 min-w-44 relative text-center border uppercase cursor-pointer group">
                                 <div class="truncate px-2">{{ $pagamento->responsavel }}</div>
                                 <div
                                     class="hidden group-hover:flex absolute top-1/4 left-1/4 transform -translate-x-1/2 -translate-y-full z-40 bg-gray-700 text-white text-sm rounded py-1 px-2 w-fit h-auto text-wrap text-center">
                                     {{ $pagamento->responsavel }}
                                 </div>
                             </td>
-                            <td class="border">
+                            <td class="border min-w-24">
                                 <div class="flex flex-row items-center justify-center w-full h-full">
                                     @if ($pagamento->data_manutencao)
                                         <div
@@ -397,7 +398,7 @@
                                     @endif
                                 </div>
                             </td>
-                            <td>
+                            <td class="min-w-24">
                                 <div class="flex flex-row items-center justify-between px-2">
                                     <span>(R$)</span>
                                     <span>{{ number_format($pagamento->valor, 2, ',', '.') }}</span>

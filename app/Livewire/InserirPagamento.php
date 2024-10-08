@@ -20,6 +20,7 @@ class InserirPagamento extends Component
     public $parcela = 1; // Campo do formulário
     public $valor = []; // Campo do formulário
     public $nota_fiscal = []; // Campo do formulário
+    public $cheque = []; // Campo do formulário
     public $emailUsuario;
     public $ipUsuario;
 
@@ -28,6 +29,7 @@ class InserirPagamento extends Component
         'vencimento.*' => 'required|date',  // Valida cada vencimento como uma data
         'parcela' => 'required|integer|min:1|max:24',  // Campo obrigatório para a quantidade de parcelas
         'nota_fiscal.*' => 'nullable',  // Valida que cada nota fiscal seja preenchida
+        'cheque.*' => 'nullable',  // Valida que cada nota fiscal seja preenchida
         'valor.*' => 'required',  // Valida que cada valor seja preenchido
         'contrato' => 'nullable',  // O contrato é opcional
         // 'data_pagamento' => 'nullable|date',
@@ -51,6 +53,7 @@ class InserirPagamento extends Component
         $this->valor = array_pad(array_slice($this->valor, 0, $this->parcela), $this->parcela, '');
         $this->nota_fiscal = array_pad(array_slice($this->nota_fiscal, 0, $this->parcela), $this->parcela, '');
         $this->vencimento = array_pad(array_slice($this->vencimento, 0, $this->parcela), $this->parcela, '');
+        $this->cheque = array_pad(array_slice($this->cheque, 0, $this->parcela), $this->parcela, '');
     }
 
     public function updatedTipoPagamento() // Chamado automaticamente sempre que a propriedade 'tipoPagamento' é atualizada.
@@ -74,6 +77,11 @@ class InserirPagamento extends Component
         // Garante que sempre haja pelo menos um campo de vencimento
         if (count($this->vencimento) < 1) {
             $this->vencimento[] = '';
+        }
+
+        // Garante que sempre haja pelo menos um campo de cheque
+        if (count($this->cheque) < 1) {
+            $this->cheque[] = '';
         }
     }
 
@@ -103,6 +111,9 @@ class InserirPagamento extends Component
                 // Verifica se o campo nota_fiscal está vazio e atribui null
                 $notaFiscal = empty($notaFiscal) ? null : $notaFiscal;
 
+                // Verifica se o campo cheque está vazio e atribui null
+                $cheque = empty($this->cheque[$index]) ? null : $this->cheque[$index];
+
                 // Formata a parcela como 1/3, 2/3, etc.
                 $parcelaFormatada = ($index + 1) . '/' . $this->parcela;
 
@@ -110,6 +121,7 @@ class InserirPagamento extends Component
                     'responsavel' => $validated['responsavel'],
                     'vencimento' => $this->vencimento[$index],  // Define o vencimento para cada parcela
                     'parcela' => $parcelaFormatada,  // Formato 1/3, 2/3, etc.
+                    'cheque' => $cheque,  // Inclui o valor do cheque no array
                     'nota_fiscal' => $notaFiscal,
                     'valor' => $this->valor[$index],
                     'fornecedor_id' => $validated['fornecedor_id'],
