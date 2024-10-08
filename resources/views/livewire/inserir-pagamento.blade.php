@@ -73,8 +73,8 @@
                             Parcela(s)</label>
                         <input type="number" name="parcelas" id="parcelas" wire:model.live.debounce.1000ms="parcela"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
-                            placeholder="" min="1" max="5" required=""
-                            oninput="if(this.value > 5) this.value = 5">
+                            placeholder="" min="1" max="24" required=""
+                            oninput="if(this.value > 24) this.value = 24">
                     </div>
 
                     @foreach ($valor as $index => $valorItem)

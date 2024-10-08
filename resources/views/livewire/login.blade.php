@@ -1,4 +1,4 @@
-<div>
+<div class="overflow-y-auto">
     <!-- Imagem de Loading -->
     <img wire:loading src="{{ asset('/images/loading.gif') }}" class="w-40 fixed inset-0 mx-auto my-auto z-50"
         alt="Loading">

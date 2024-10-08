@@ -26,7 +26,7 @@ class InserirPagamento extends Component
     protected $rules = [
         'responsavel' => 'required',  // Campo obrigatório para o responsável
         'vencimento.*' => 'required|date',  // Valida cada vencimento como uma data
-        'parcela' => 'required|integer|min:1|max:5',  // Campo obrigatório para a quantidade de parcelas
+        'parcela' => 'required|integer|min:1|max:24',  // Campo obrigatório para a quantidade de parcelas
         'nota_fiscal.*' => 'nullable',  // Valida que cada nota fiscal seja preenchida
         'valor.*' => 'required',  // Valida que cada valor seja preenchido
         'contrato' => 'nullable',  // O contrato é opcional

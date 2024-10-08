@@ -431,27 +431,27 @@
     </section>
 
     <div x-show="inserirFornecedor" x-cloak>
-        <div class="fixed z-50 inset-0 overflow-x-hidden overflow-y-hidden">
+        <div class="fixed inset-0 z-50 overflow-x-auto overflow-y-auto">
             <div
-                class="flex flex-col items-center justify-center h-screen w-full bg-slate-700 bg-opacity-90 overflow-y-auto">
+                class="flex flex-col items-center justify-center min-h-screen w-full bg-slate-700 bg-opacity-90 overflow-y-auto">
                 @livewire('inserir-fornecedor')
             </div>
         </div>
     </div>
 
     <div x-show="inserirPagamento" x-cloak>
-        <div class="fixed z-50 inset-0 overflow-x-hidden overflow-y-hidden">
+        <div class="fixed inset-0 z-50 overflow-x-auto overflow-y-auto">
             <div
-                class="flex flex-col items-center justify-center h-screen w-full bg-slate-700 bg-opacity-90 overflow-y-auto">
+                class="flex flex-col items-center justify-center min-h-screen w-full bg-slate-700 bg-opacity-90 overflow-y-auto">
                 @livewire('inserir-pagamento')
             </div>
         </div>
     </div>
 
     <div x-show="editarPagamento" x-cloak>
-        <div class="fixed z-50 inset-0 overflow-x-hidden overflow-y-hidden">
+        <div class="fixed inset-0 z-50 overflow-x-auto overflow-y-auto">
             <div
-                class="flex flex-col items-center justify-center h-screen w-full bg-slate-700 bg-opacity-90 overflow-y-auto">
+                class="flex flex-col items-center justify-center min-h-screen w-full bg-slate-700 bg-opacity-90 overflow-y-auto">
                 @livewire('editar-pagamento')
             </div>
         </div>

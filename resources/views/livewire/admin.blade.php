@@ -1,4 +1,4 @@
-<div class="bg-gray-200 flex flex-col items-center justify-center h-screen">
+<div class="bg-gray-200 flex flex-col items-center justify-center overflow-y-auto p-10">
     <div class="w-full max-w-xl bg-white p-6 rounded-lg shadow-md">
         <h2 class="text-2xl font-semibold text-gray-700 text-center mb-6">Gerenciar Usuários
             <p>{{ Auth::user()->email }}

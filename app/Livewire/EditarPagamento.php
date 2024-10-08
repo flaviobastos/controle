@@ -71,6 +71,9 @@ class EditarPagamento extends Component
             // Verifica se o campo nota_fiscal está vazio e atribui null
             $this->nota_fiscal = empty($this->nota_fiscal) ? null : $this->nota_fiscal;
 
+            // Verifica se o campo cheque está vazio e atribui null
+            $this->cheque = empty($this->cheque) ? null : $this->cheque;
+
             // Atualiza o pagamento no banco de dados
             Pagamento::find($this->id_editarPagamento)->update([
                 'responsavel' => $validated['responsavel'],
